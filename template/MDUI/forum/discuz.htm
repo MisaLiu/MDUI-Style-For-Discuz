@@ -1,0 +1,562 @@
+<!--{template common/header}-->
+
+<!--=====论坛首页四格、板块、在线人数、友联等的显示区域=====-->
+<div id="ct" class="wp cl{if $_G['setting']['forumallowside']} ct2{/if}">
+
+	<h1>
+		$_G['setting']['bbname']
+	</h1>
+
+	<!--{if empty($gid)}-->
+
+		<!--=====首页站点统计信息，包含今昨日帖子数、会员数，以及新会员等=====-->
+		<div id="chart" class="bm bw0 cl">
+
+			<p class="chart z">
+				{lang index_today}: <em>$todayposts</em>
+				<span class="pipe">|</span>
+
+				{lang index_yesterday}: <em>$postdata[0]</em>
+				<span class="pipe">|</span>
+
+				{lang index_posts}: <em>$posts</em>
+				<span class="pipe">|</span>
+
+				{lang index_members}: <em>$_G['cache']['userstats']['totalmembers']</em>
+					<!--{if $_G['cache']['userstats']['newsetuser']}-->
+						<span class="pipe">|</span>
+						{lang welcome_new_members}: <em><a href="home.php?mod=space&username={echo rawurlencode($_G['cache']['userstats']['newsetuser'])}" target="_blank" class="xi2">$_G['cache']['userstats']['newsetuser']</a></em>
+					<!--{/if}-->
+			</p>
+
+			<!--=====统计信息同一行右边的 我的帖子 与 最新回复=====-->
+			<div class="y">
+				<!--{hook/index_nav_extra}-->
+				<!--{if $_G['uid']}-->
+					<!--=====判断用户有没有登录=====-->
+					<a href="forum.php?mod=guide&view=my" title="{lang my_posts}" class="xi2">{lang my_posts}</a>
+				<!--{/if}-->
+
+				<!--{if !empty($_G['setting']['search']['forum']['status'])}-->
+					<!--=====这判断了个啥=====-->
+					<!--{if $_G['uid']}-->
+						<!--=====判断用户有没有登录=====-->
+						<span class="pipe">|</span>
+					<!--{/if}-->
+					<a href="forum.php?mod=guide&view=new" title="{lang show_newthreads}" class="xi2">{lang show_newthreads}</a>
+				<!--{/if}-->
+
+			</div>
+		</div>
+	<!--{/if}-->
+
+	<!--[diy=diy_chart]-->
+		<div id="diy_chart" class="area"></div>
+	<!--[/diy]-->
+
+	<!--=====板块、在线会员、友链区=====-->
+	<div class="mn">
+
+		<!--{if !empty($_G['setting']['grid']['showgrid'])}-->
+		<!-- index four grid -->
+
+		<!--=====板块区=====-->
+		<div class="fl bm">
+
+			<!--=====绘制分区=====-->
+			<div class="bm bmw cl">
+
+				<!--=====板块区=====-->
+				<div id="category_grid" class="bm_c" >
+					<table cellspacing="0" cellpadding="0"><tr>
+					<!--{if !$_G['setting']['grid']['gridtype']}-->
+						<td valign="top" class="category_l1">
+							<div class="newimgbox">
+								<h4><span class="tit_newimg"></span>{lang latest_images}</h4>
+								<div class="module cl slidebox_grid" style="width:218px">
+									<script type="text/javascript">
+									var slideSpeed = 5000;
+									var slideImgsize = [218,200];
+									var slideBorderColor = '{$_G['style']['specialborder']}';
+									var slideBgColor = '{$_G['style']['commonbg']}';
+									var slideImgs = new Array();
+									var slideImgLinks = new Array();
+									var slideImgTexts = new Array();
+									var slideSwitchColor = '{$_G['style']['tabletext']}';
+									var slideSwitchbgColor = '{$_G['style']['commonbg']}';
+									var slideSwitchHiColor = '{$_G['style']['specialborder']}';
+									{eval $k = 1;}
+									<!--{loop $grids['slide'] $stid $svalue}-->
+										slideImgs[<!--{echo $k}-->] = '$svalue[image]';
+										slideImgLinks[<!--{echo $k}-->] = '{$svalue[url]}';
+										slideImgTexts[<!--{echo $k}-->] = '$svalue[subject]';
+										{eval $k++;}
+									<!--{/loop}-->
+									</script>
+									<script language="javascript" type="text/javascript" src="{$_G[setting][jspath]}forum_slide.js?{VERHASH}"></script>
+								</div>
+							</div>
+						</td>
+					<!--{/if}-->
+					<td valign="top" class="category_l2">
+						<div class="subjectbox">
+							<h4><span class="tit_subject"></span>{lang collection_lastthread}</h4>
+					        <ul class="category_newlist">
+					        	<!--{loop $grids['newthread'] $thread}-->
+					        	<!--{if !$thread['forumstick'] && $thread['closed'] > 1 && ($thread['isgroup'] == 1 || $thread['fid'] != $_G['fid'])}-->
+									<!--{eval $thread[tid]=$thread[closed];}-->
+								<!--{/if}-->
+								<li><a href="forum.php?mod=viewthread&tid=$thread[tid]&extra=$extra"{if $thread['highlight']} $thread['highlight']{/if}{if $_G['setting']['grid']['showtips']} tip="{lang title}: <strong>$thread[oldsubject]</strong><br/>{lang author}: $thread[author] ($thread[dateline])<br/>{lang show}/{lang reply}: $thread[views]/$thread[replies]" onmouseover="showTip(this)"{else} title="$thread[oldsubject]"{/if}{if $_G['setting']['grid']['targetblank']} target="_blank"{/if}>$thread[subject]</a></li>
+								<!--{/loop}-->
+					         </ul>
+				         </div>
+					</td>
+					<td valign="top" class="category_l3">
+						<div class="replaybox">
+							<h4><span class="tit_replay"></span>{lang show_newthreads}</h4>
+					        <ul class="category_newlist">
+					        	<!--{loop $grids['newreply'] $thread}-->
+					        	<!--{if !$thread['forumstick'] && $thread['closed'] > 1 && ($thread['isgroup'] == 1 || $thread['fid'] != $_G['fid'])}-->
+									<!--{eval $thread[tid]=$thread[closed];}-->
+								<!--{/if}-->
+								<li><a href="forum.php?mod=redirect&tid=$thread[tid]&goto=lastpost#lastpost"{if $thread['highlight']} $thread['highlight']{/if}{if $_G['setting']['grid']['showtips']}tip="{lang title}: <strong>$thread[oldsubject]</strong><br/>{lang author}: $thread[author] ($thread[dateline])<br/>{lang show}/{lang reply}: $thread[views]/$thread[replies]" onmouseover="showTip(this)"{else} title="$thread[oldsubject]"{/if}{if $_G['setting']['grid']['targetblank']} target="_blank"{/if}>$thread[subject]</a></li>
+								<!--{/loop}-->
+					         </ul>
+				         </div>
+					</td>
+					<td valign="top" class="category_l3">
+						<div class="hottiebox">
+							<h4><span class="tit_hottie"></span>{lang hot_thread}</h4>
+					        <ul class="category_newlist">
+					        	<!--{loop $grids['hot'] $thread}-->
+					        	<!--{if !$thread['forumstick'] && $thread['closed'] > 1 && ($thread['isgroup'] == 1 || $thread['fid'] != $_G['fid'])}-->
+									<!--{eval $thread[tid]=$thread[closed];}-->
+								<!--{/if}-->
+								<li><a href="forum.php?mod=viewthread&tid=$thread[tid]&extra=$extra"{if $thread['highlight']} $thread['highlight']{/if}{if $_G['setting']['grid']['showtips']} tip="{lang title}: <strong>$thread[oldsubject]</strong><br/>{lang author}: $thread[author] ($thread[dateline])<br/>{lang show}/{lang reply}: $thread[views]/$thread[replies]" onmouseover="showTip(this)"{else} title="$thread[oldsubject]"{/if}{if $_G['setting']['grid']['targetblank']} target="_blank"{/if}>$thread[subject]</a></li>
+								<!--{/loop}-->
+					         </ul>
+				         </div>
+					</td>
+					<!--{if $_G['setting']['grid']['gridtype']}-->
+						<td valign="top" class="category_l4">
+							<div class="goodtiebox">
+								<h4><span class="tit_goodtie"></span>{lang post_digest_thread}</h4>
+								<ul class="category_newlist">
+									<!--{loop $grids['digest'] $thread}-->
+										<!--{if !$thread['forumstick'] && $thread['closed'] > 1 && ($thread['isgroup'] == 1 || $thread['fid'] != $_G['fid'])}-->
+											<!--{eval $thread[tid]=$thread[closed];}-->
+										<!--{/if}-->
+										<li><a href="forum.php?mod=viewthread&tid=$thread[tid]&extra=$extra"{if $thread['highlight']} $thread['highlight']{/if}{if $_G['setting']['grid']['showtips']} tip="{lang title}: <strong>$thread[oldsubject]</strong><br/>{lang author}: $thread[author] ($thread[dateline])<br/>{lang show}/{lang reply}: $thread[views]/$thread[replies]" onmouseover="showTip(this)"{else} title="$thread[oldsubject]"{/if}{if $_G['setting']['grid']['targetblank']} target="_blank"{/if}>$thread[subject]</a></li>
+									<!--{/loop}-->
+								 </ul>
+						 	</div>
+						</td>
+					<!--{/if}-->
+					</table>
+				</div>
+			</div>
+		</div>
+
+		<!-- index four grid end -->
+		<!--{/if}-->
+
+		<!--{hook/index_top}-->
+
+		<!--{if !empty($_G['cache']['heats']['message'])}-->
+			<div class="bm">
+				<div class="bm_h cl">
+					<h2>{lang hotthreads_forum}</h2>
+				</div>
+				<div class="bm_c cl">
+					<div class="heat z">
+						<!--{loop $_G['cache']['heats']['message'] $data}-->
+							<dl class="xld">
+								<dt><!--{if $_G['adminid'] == 1}--><a class="d" href="forum.php?mod=misc&action=removeindexheats&tid=$data[tid]" onclick="return removeindexheats()">delete</a><!--{/if}-->
+								<a href="forum.php?mod=viewthread&tid=$data[tid]" target="_blank" class="xi2">$data[subject]</a></dt>
+								<dd>$data[message]</dd>
+							</dl>
+						<!--{/loop}-->
+					</div>
+					<ul class="xl xl1 heatl">
+					<!--{loop $_G['cache']['heats']['subject'] $data}-->
+						<li><!--{if $_G['adminid'] == 1}--><a class="d" href="forum.php?mod=misc&action=removeindexheats&tid=$data[tid]" onclick="return removeindexheats()">delete</a><!--{/if}-->&middot; <a href="forum.php?mod=viewthread&tid=$data[tid]" target="_blank" class="xi2">$data[subject]</a></li>
+					<!--{/loop}-->
+					</ul>
+				</div>
+			</div>
+		<!--{/if}-->
+
+		<!--{hook/index_catlist_top}-->
+
+			<!--=====我收藏的板块=====-->
+
+			<!--{if empty($gid) && !empty($forum_favlist)}-->
+			<!--{eval $forumscount = count($forum_favlist);}-->
+			<!--{eval $forumcolumns = $forumscount > 3 ? ($forumscount == 4 ? 4 : 5) : 1;}-->
+
+			<!--{eval $forumcolwidth = (floor(100 / $forumcolumns) - 0.1).'%';}-->
+
+			<div class="mdui-panel" mdui-panel> 
+				<div class="mdui-panel-item mdui-panel-item-open"> 
+					<div class="mdui-panel-item-header"> 
+						<div class="mdui-panel-item-title">
+							{lang forum_myfav}
+						</div> 
+						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i> 
+					</div> 
+					<div class="mdui-panel-item-body"> 
+						<div class="mdui-row"> 
+							<!--{eval $favorderid = 0;}-->
+							<!--{loop $forum_favlist $key $favorite}-->
+							<!--{eval $forum=$favforumlist[$favorite[id]];}-->
+							<!--{eval $forumurl = !empty($forum['domain']) && !empty($_G['setting']['domain']['root']['forum']) ? $_G['scheme'].'://'.$forum['domain'].'.'.$_G['setting']['domain']['root']['forum'] : 'forum.php?mod=forumdisplay&fid='.$forum['fid'];}-->
+							<div class="mdui-col-sm-6 mdui-col-md-4">
+								<div class="mdui-card"> 
+									<!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 --> 
+									<div class="mdui-card-media"> 
+										<img src="https://s3.ax1x.com/2020/12/04/DHZ4m9.jpg" /> 
+										<div class="mdui-card-media-covered mdui-card-media-covered-top mdui-card-media-covered-transparent"> 
+											<!-- 卡片的标题和副标题 --> 
+											<div class="mdui-card-primary"> 
+												<div class="mdui-card-primary-title">
+													<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if}{if $forum[extra][namecolor]} style="color: {$forum[extra][namecolor]};"{else} class="mdui-text-color-white"{/if}>$forum[name]</a>
+												</div> 
+												<div class="mdui-card-primary-subtitle">
+													$forum[description]
+												</div> 
+												<div class="mdui-card-primary-subtitle">
+													共有 <!--{echo dnumber($forum[threads])}--> 个帖子
+												</div> 
+											</div> 
+										</div> 
+										<div class="mdui-card-media-covered"> 
+											<div class="mdui-card-primary"> 
+												<!--{if $forum['permission'] == 1}-->
+													<!--=====如果这个板块是私密板块（有权限但用户不够）=====-->
+													<div class="mdui-card-primary-subtitle">
+														{lang private_forum}
+													</div>
+												<!--{else}-->
+												<!--{if $forum['redirect']}-->
+													<!--=====如果这个板块链接至外部链接=====-->
+													<div class="mdui-card-primary-subtitle">
+														<a href="$forumurl" class="mdui-text-color-white">
+															{lang url_link}
+														</a>
+													</div>
+												<!--{elseif is_array($forum['lastpost'])}-->
+													<!--=====上面两种都不是，则显示最新回复/发布的帖子=====-->
+													<!--{if $cat['forumcolumns'] < 3}-->
+														<div class="mdui-card-primary-subtitle">
+															<a href="forum.php?mod=redirect&tid=$forum[lastpost][tid]&goto=lastpost#lastpost" class="mdui-text-color-white">
+																<!--{echo cutstr($forum[lastpost][subject], 30)}-->
+															</a>
+														</div>
+														<div class="mdui-card-primary-subtitle">
+															<!--{if $forum['lastpost']['author']}-->
+																$forum[lastpost][author][uid]
+															<!--{else}-->
+																$_G[setting][anonymoustext]
+															<!--{/if}-->
+															&nbsp;&nbsp;
+															$forum[lastpost][dateline] 
+														</div>
+													<!--{else}-->
+														<div class="mdui-card-primary-subtitle">
+															<a href="forum.php?mod=redirect&tid=$forum[lastpost][tid]&goto=lastpost#lastpost" class="mdui-text-color-white">{lang forum_lastpost}: $forum[lastpost][dateline]</a>
+														</div>
+													<!--{/if}-->
+												<!--{else}-->
+													<!--=====如果板块里一个帖子都没有就输出“从未”=====-->
+													<div class="mdui-card-primary-subtitle">{lang never}</div>
+												<!--{/if}-->
+											<!--{/if}-->
+											</div> 
+										</div> 
+									</div> 
+									<!-- 卡片的按钮 --> 
+									<div class="mdui-card-actions"> 
+										<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} class="mdui-btn mdui-ripple mdui-float-right">
+											进入板块
+											<i class="mdui-icon material-icons">chevron_right</i>
+										</a> 
+									</div> 
+								</div> 
+							</div> 		
+						    <!--{/loop}-->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+			<br />
+			<!--{ad/intercat/bm a_c/-1}-->
+			<!--{/if}-->
+
+		<!--{loop $catlist $key $cat}-->
+			<!--{hook/index_catlist $cat[fid]}-->
+
+			<!--=====真·分区=====-->
+
+			<div class="mdui-panel" mdui-panel> 
+				<div class="mdui-panel-item mdui-panel-item-open"> 
+					<div class="mdui-panel-item-header"> 
+						<div class="mdui-panel-item-title">
+							$cat[name]
+						</div> 
+						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i> 
+					</div> 
+					<div class="mdui-panel-item-body"> 
+						<div class="mdui-row"> 
+							<!--{loop $cat[forums] $forumid}-->
+							<!--{eval $forum=$forumlist[$forumid];}-->
+							<!--{eval $forumurl = !empty($forum['domain']) && !empty($_G['setting']['domain']['root']['forum']) ? $_G['scheme'].'://'.$forum['domain'].'.'.$_G['setting']['domain']['root']['forum'] : 'forum.php?mod=forumdisplay&fid='.$forum['fid'];}-->
+							<!--=====上面那几排判断式我还是没看懂=====-->
+							<div class="mdui-col-sm-6 mdui-col-md-4">
+								<div class="mdui-card"> 
+									<!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 --> 
+									<div class="mdui-card-media"> 
+										<img src="https://s3.ax1x.com/2020/12/04/DHZ4m9.jpg" /> 
+										<div class="mdui-card-media-covered mdui-card-media-covered-top mdui-card-media-covered-transparent"> 
+											<!-- 卡片的标题和副标题 --> 
+											<div class="mdui-card-primary"> 
+												<div class="mdui-card-primary-title">
+													<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if}{if $forum[extra][namecolor]} style="color: {$forum[extra][namecolor]};"{else} class="mdui-text-color-white"{/if}>$forum[name]</a>
+												</div> 
+												<div class="mdui-card-primary-subtitle">
+													$forum[description]
+												</div> 
+												<div class="mdui-card-primary-subtitle">
+													共有 <!--{echo dnumber($forum[threads])}--> 个帖子
+												</div> 
+											</div> 
+										</div> 
+										<div class="mdui-card-media-covered"> 
+											<div class="mdui-card-primary"> 
+												<!--{if $forum['permission'] == 1}-->
+													<!--=====如果这个板块是私密板块（有权限但用户不够）=====-->
+													<div class="mdui-card-primary-subtitle">
+														{lang private_forum}
+													</div>
+												<!--{else}-->
+												<!--{if $forum['redirect']}-->
+													<!--=====如果这个板块链接至外部链接=====-->
+													<div class="mdui-card-primary-subtitle">
+														<a href="$forumurl" class="mdui-text-color-white">
+															{lang url_link}
+														</a>
+													</div>
+												<!--{elseif is_array($forum['lastpost'])}-->
+													<!--=====上面两种都不是，则显示最新回复/发布的帖子=====-->
+													<!--{if $cat['forumcolumns'] < 3}-->
+														<div class="mdui-card-primary-subtitle">
+															<a href="forum.php?mod=redirect&tid=$forum[lastpost][tid]&goto=lastpost#lastpost" class="mdui-text-color-white">
+																<!--{echo cutstr($forum[lastpost][subject], 30)}-->
+															</a>
+														</div>
+														<div class="mdui-card-primary-subtitle">
+															<!--{if $forum['lastpost']['author']}-->
+																$forum[lastpost][author][uid]
+															<!--{else}-->
+																$_G[setting][anonymoustext]
+															<!--{/if}-->
+															&nbsp;&nbsp;
+															$forum[lastpost][dateline] 
+														</div>
+													<!--{else}-->
+														<div class="mdui-card-primary-subtitle">
+															<a href="forum.php?mod=redirect&tid=$forum[lastpost][tid]&goto=lastpost#lastpost" class="mdui-text-color-white">{lang forum_lastpost}: $forum[lastpost][dateline]</a>
+														</div>
+													<!--{/if}-->
+												<!--{else}-->
+													<!--=====如果板块里一个帖子都没有就输出“从未”=====-->
+													<div class="mdui-card-primary-subtitle">{lang never}</div>
+												<!--{/if}-->
+											<!--{/if}-->
+											</div> 
+										</div> 
+									</div> 
+									<!-- 卡片的按钮 --> 
+									<div class="mdui-card-actions"> 
+										<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} class="mdui-btn mdui-ripple mdui-float-right">
+											进入板块
+											<i class="mdui-icon material-icons">chevron_right</i>
+										</a> 
+									</div> 
+								</div> 
+							</div> 		
+						    <!--{/loop}-->
+						</div> 
+					</div> 
+				</div> 
+			</div> 
+
+			<!--{ad/intercat/bm a_c/$cat[fid]}-->
+		<!--{/loop}-->
+
+			<!--{if !empty($collectiondata['data'])}-->
+
+			<!--{eval $forumscount = count($collectiondata['data']);}-->
+			<!--{eval $forumcolumns = 4;}-->
+
+			<!--{eval $forumcolwidth = (floor(100 / $forumcolumns) - 0.1).'%';}-->
+
+			<div class="bm bmw {if $forumcolumns} flg{/if} cl">
+				<div class="bm_h cl">
+					<span class="o">
+						<img id="category_-2_img" src="{IMGDIR}/$collapse['collapseimg_-2']" title="{lang spread}" alt="{lang spread}" onclick="toggle_collapse('category_-2');" />
+					</span>
+					<h2><a href="forum.php?mod=collection">{lang recommend_collection}</a></h2>
+				</div>
+				<div id="category_-2" class="bm_c" style="{echo $collapse['category_-2']}">
+					<table cellspacing="0" cellpadding="0" class="fl_tb">
+						<tr>
+						<!--{eval $ctorderid = 0;}-->
+						<!--{loop $collectiondata['data'] $key $colletion}-->
+							<!--{if $ctorderid && ($ctorderid % $forumcolumns == 0)}-->
+								</tr>
+								<!--{if $ctorderid < $forumscount}-->
+									<tr class="fl_row">
+								<!--{/if}-->
+							<!--{/if}-->
+							<td class="fl_g"{if $forumcolwidth} width="$forumcolwidth"{/if}>
+								<div class="fl_icn_g">
+								<a href="forum.php?mod=collection&action=view&ctid={$colletion[ctid]}" target="_blank"><img src="{IMGDIR}/forum.gif" alt="$colletion[name]" /></a>
+								</div>
+								<dl>
+									<dt><a href="forum.php?mod=collection&action=view&ctid={$colletion[ctid]}">$colletion[name]</a></dt>
+									<dd><em>{lang forum_threads}: <!--{echo dnumber($colletion[threadnum])}--></em>, <em>{lang collection_commentnum}: <!--{echo dnumber($colletion[commentnum])}--></em></dd>
+									<dd>
+									<!--{if $colletion['lastpost']}-->
+										<!--{if $forumcolumns < 3}-->
+											<a href="forum.php?mod=redirect&tid=$colletion[lastpost]&goto=lastpost#lastpost" class="xi2"><!--{echo cutstr($colletion[lastsubject], 30)}--></a> <cite><!--{date($colletion[lastposttime])}--> <!--{if $colletion['lastposter']}-->$colletion['lastposter']<!--{else}-->$_G[setting][anonymoustext]<!--{/if}--></cite>
+										<!--{else}-->
+											<a href="forum.php?mod=redirect&tid=$colletion[lastpost]&goto=lastpost#lastpost">{lang forum_lastpost}: <!--{date($colletion[lastposttime])}--></a>
+										<!--{/if}-->
+									<!--{else}-->
+										{lang never}
+									<!--{/if}-->
+									</dd>
+									<!--{hook/index_datacollection_extra $colletion[ctid]}-->
+								</dl>
+							</td>
+							<!--{eval $ctorderid++;}-->
+
+						<!--{/loop}-->
+						<!--{if ($columnspad = $ctorderid % $forumcolumns) > 0}--><!--{echo str_repeat('<td class="fl_g"'.($forumcolwidth ? " width=\"$forumcolwidth\"" : '').'></td>', $forumcolumns - $columnspad);}--><!--{/if}-->
+						</tr>
+					</table>
+
+				</div>
+			</div>
+
+			<!--{/if}-->
+
+		</div>
+
+		<!--{hook/index_middle}-->
+		<div class="wp mtn">
+			<!--[diy=diy3]--><div id="diy3" class="area"></div><!--[/diy]-->
+		</div>
+
+		<!--{if empty($gid) && $_G['setting']['whosonlinestatus']}-->
+			<!--=====显示在线会员板块=====-->
+
+			<br />
+			<div class="mdui-panel" mdui-panel> 
+				<div class="mdui-panel-item mdui-panel-item-open"> 
+					<div class="mdui-panel-item-header"> 
+						<div class="mdui-panel-item-title">
+							{lang onlinemember}
+						</div> 
+						<!--{if $detailstatus}-->
+						<div class="mdui-panel-item-summary">
+							$onlinenum {lang onlines} - $membercount {lang index_members}（$invisiblecount {lang index_invisibles}），$guestcount {lang index_guests}
+						</div>
+						<div class="mdui-panel-item-summary">
+							{lang index_mostonlines} $onlineinfo[0] {lang on} $onlineinfo[1]
+						</div>
+						<!--{/if}-->
+						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i> 
+					</div> 
+					<div class="mdui-panel-item-body">
+						<!--
+						$_G[cache][onlinelist][legend]
+						-->
+						<div class="mdui-row">
+							<!--
+							<br />
+							-->
+							<!--{if $whosonline}-->
+								<!--{loop $whosonline $key $online}-->
+									<div class="mdui-chip" mdui-tooltip="{content: '{lang time}：$online[lastactivity]', delay: 1000}">
+										<!--{if $online[uid]!=0}-->
+										<a href="home.php?mod=space&uid=$online[uid]" target="_blank" class="mdui-chip">
+										<!--{/if}-->
+											<img class="mdui-chip-icon" src="{echo discuz_uc_avatar($online[uid], 'small',true);}"/>
+											<span class="mdui-chip-title">$online[username]</span>
+										<!--{if $online[uid]!=0}-->
+										</a>
+										<!--{/if}-->
+									</div>&nbsp;&nbsp;
+								<!--{/loop}-->
+							<!--{else}-->
+								<!--=====如果在线的都是游客=====-->
+								<center><div class="mdui-text-color-black-disabled">{lang online_only_guests}</div></center>
+							<!--{/if}-->
+						</div> 
+						<div class="mdui-panel-item-actions">
+							<a href="home.php?mod=space&do=friend&view=online&type=member" class="mdui-btn mdui-ripple">显示全部</a>
+						</div>
+					</div> 
+				</div> 
+			</div> 
+		<!--{/if}-->
+
+		<!--{if empty($gid) && ($_G['cache']['forumlinks'][0] || $_G['cache']['forumlinks'][1] || $_G['cache']['forumlinks'][2])}-->
+		<!--=====友情链接区=====-->
+		<div class="bm lk">
+			<div id="category_lk" class="bm_c ptm">
+
+				<!--{if $_G['cache']['forumlinks'][0]}-->
+					<div class="mdui-typo">
+						<!--=====带图标的友链=====-->
+						$_G['cache']['forumlinks'][0]
+					</div>
+				<!--{/if}-->
+				
+				<!--{if $_G['cache']['forumlinks'][1]}-->
+					<div class="mdui-divider"></div>
+					<div class="mdui-typo">
+						<!--=====不知道我是什么类型的友链=====-->
+						$_G['cache']['forumlinks'][1]
+					</div>
+				<!--{/if}-->
+				
+				<!--{if $_G['cache']['forumlinks'][2]}-->
+					<div class="mdui-divider"></div>
+					<div class="mdui-typo">
+						<!--=====纯文字友链=====-->
+						$_G['cache']['forumlinks'][2]
+					</div>
+				<!--{/if}-->
+
+			</div>
+		</div>
+		<!--{/if}-->
+
+		<!--{hook/index_bottom}-->
+	</div>
+
+	<!--{if $_G['setting']['forumallowside']}-->
+		<div id="sd" class="sd">
+			<!--{hook/index_side_top}-->
+			<div class="drag">
+				<!--[diy=diy2]--><div id="diy2" class="area"></div><!--[/diy]-->
+			</div>
+			<!--{hook/index_side_bottom}-->
+		</div>
+	<!--{/if}-->
+</div>
+
+<!--{if empty($_G['setting']['disfixednv_forumindex']) }--><script>fixed_top_nv();</script><!--{/if}-->
+<!--{template common/footer}-->

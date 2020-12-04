@@ -1,0 +1,117 @@
+<!--{subtemplate common/header_common}-->
+    
+    <!--=====论坛相关标识参数=====-->
+	<meta name="application-name" content="$_G['setting']['bbname']" />
+	<meta name="msapplication-tooltip" content="$_G['setting']['bbname']" />
+	<!--{if $_G['setting']['portalstatus']}-->
+		<meta name="msapplication-task" content="name=$_G['setting']['navs'][1]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['portal']) ? $_G['scheme'].'://'.$_G['setting']['domain']['app']['portal'] : $_G[siteurl].'portal.php'};icon-uri={$_G[siteurl]}{IMGDIR}/portal.ico" />
+	<!--{/if}-->
+	<meta name="msapplication-task" content="name=$_G['setting']['navs'][2]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['forum']) ? $_G['scheme'].'://'.$_G['setting']['domain']['app']['forum'] : $_G[siteurl].'forum.php'};icon-uri={$_G[siteurl]}{IMGDIR}/bbs.ico" />
+	<!--{if $_G['setting']['groupstatus']}-->
+		<meta name="msapplication-task" content="name=$_G['setting']['navs'][3]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['group']) ? $_G['scheme'].'://'.$_G['setting']['domain']['app']['group'] : $_G[siteurl].'group.php'};icon-uri={$_G[siteurl]}{IMGDIR}/group.ico" />
+	<!--{/if}-->
+	<!--{if helper_access::check_module('feed')}-->
+		<meta name="msapplication-task" content="name=$_G['setting']['navs'][4]['navname'];action-uri={echo !empty($_G['setting']['domain']['app']['home']) ? $_G['scheme'].'://'.$_G['setting']['domain']['app']['home'] : $_G[siteurl].'home.php'};icon-uri={$_G[siteurl]}{IMGDIR}/home.ico" />
+	<!--{/if}-->
+	<!--{if $_G['basescript'] == 'forum' && $_G['setting']['archiver']}-->
+		<link rel="archives" title="$_G['setting']['bbname']" href="{$_G[siteurl]}archiver/" />
+	<!--{/if}-->
+	<!--{if !empty($rsshead)}-->$rsshead<!--{/if}-->
+	
+	<!--=====加载论坛使用的JS=====-->
+	<!--{if $_G['basescript'] == 'forum' || $_G['basescript'] == 'group'}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}forum.js?{VERHASH}"></script>
+	<!--{elseif $_G['basescript'] == 'home'}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}home.js?{VERHASH}"></script>
+	<!--{elseif $_G['basescript'] == 'portal'}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}portal.js?{VERHASH}"></script>
+	<!--{/if}-->
+	<!--{if $_G['basescript'] != 'portal' && $_GET['diy'] == 'yes' && check_diy_perm($topic)}-->
+		<script type="text/javascript" src="{$_G[setting][jspath]}portal.js?{VERHASH}"></script>
+	<!--{/if}-->
+
+</head>
+
+<!--=====设定 Body 相关参数=====-->
+<!--=====CSS 参数根据打开的页面种类而改变=====-->
+<body class="mdui-appbar-with-toolbar mdui-drawer-body-left mdui-theme-primary-indigo mdui-theme-accent-pink">
+	<div id="append_parent"></div><div id="ajaxwaitid"></div>
+	<div class="mdui-dialog" id="mdui_ajaxwaitid">
+    	<div class="mdui-dialog-content"><i class="mdui-icon"><div class="mdui-spinner"></div></i>&nbsp;&nbsp;&nbsp;&nbsp;请稍后...</div>
+	</div>
+	<!--{if empty($topic) || $topic['useheader']}-->
+		
+		<!--=====首页包括用户信息、导航栏、搜索的div=====-->
+		<div class="mdui-appbar mdui-appbar-fixed"> 
+			<div class="mdui-toolbar mdui-color-theme"> 
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '快捷菜单'}" mdui-drawer="{target: '#mdui_user_nav'}">
+					<i class="mdui-icon material-icons">menu</i>
+				</a> 
+				<!--{eval $mnid = getcurrentnav();}-->
+				<a href="{if $_G['setting']['domain']['app']['default']}{$_G['scheme']}://{$_G['setting']['domain']['app']['default']}/{else}./{/if}" class="mdui-typo-headline">$_G['setting']['bbname']</a> 
+				<div class="mdui-toolbar-spacer"></div> 
+				<a href="search.php" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '搜索'}">
+					<i class="mdui-icon material-icons">search</i>
+				</a> 
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" onclick="history.go(0);" mdui-tooltip="{content: '刷新'}">
+					<i class="mdui-icon material-icons">refresh</i>
+				</a> 
+				<!--{template common/header_userstatus}-->
+			</div> 
+		</div> 
+		<!--{hook/global_header}-->
+	<!--{/if}-->
+
+    <div class="mdui-drawer" id="mdui_user_nav">
+		<style>
+			.billboard {
+				height: 144px;
+				background: url('https://s3.ax1x.com/2020/12/04/DHz0HS.png');
+				background-size: cover;
+			}
+			.logo {
+				position: absolute;
+				height: 64px;
+				width: 64px;
+				border-radius: 32px;
+			}
+			.description {
+				position: absolute;
+				margin-top: 96px;
+				padding-left: 4px;
+				width: inherit;
+				height: 32px;
+				font-size: 14px;
+				line-height: 120%;
+				font-weight: 700;
+				white-space: normal;
+				text-shadow: #000 0.5px 0.5px 0.5px;
+				overflow: hidden;
+			}
+		</style>
+		<div class="billboard">
+			<!--{if $_G['uid']}-->
+			<a href="home.php?mod=space&uid=$_G[uid]" class="logo mdui-m-y-2 mdui-m-l-2" style="background:url('uc_server/avatar.php?uid=$_G['uid']&size=middle');background-size:contain"></a>
+				<div class="description mdui-m-x-2 mdui-text-color-white-text mdui-valign">您好，$_G[username]</div>
+			<!--{else}-->
+			<a href="member.php?mod=logging&action=login" class="logo mdui-m-y-2 mdui-m-l-2" style="background:url('uc_server/avatar.php?uid=$_G['uid']&size=middle');background-size:contain"></a>
+			<div class="description mdui-m-x-2 mdui-text-color-white-text mdui-valign">您还未登录，登录或立即注册</div>
+			<!--{/if}-->
+		</div>
+		<div class="mdui-list">
+			<!--{loop $_G['setting']['navs'] $nav}-->
+				<!--{if $nav['available'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1))}-->
+					<!--=====loop 输出导航栏项目=====-->
+					<a href="#" class="mdui-list-item mdui-ripple">$nav[navname]</a> 
+					<li {if $mnid == $nav[navid]}class="a" {/if}$nav[nav]>$nav['link']</li>
+				<!--{/if}-->
+			<!--{/loop}-->
+			<a href="#" class="mdui-list-item mdui-ripple ">论坛</a> 
+			<a href="#" class="mdui-list-item mdui-ripple ">日志</a> 
+			<a href="#" class="mdui-list-item mdui-ripple ">广播</a> 
+			<a href="#" class="mdui-list-item mdui-ripple ">群组</a> 
+		</div>
+	</div> 
+    <!--=====Discuz! 页面上部所包含的所有元素差不多就绘制完了=====-->
+
+	<div class="mdui-container">
