@@ -34,7 +34,7 @@
 
 <!--=====设定 Body 相关参数=====-->
 <!--=====CSS 参数根据打开的页面种类而改变=====-->
-<body class="mdui-appbar-with-toolbar mdui-drawer-body-left mdui-theme-primary-indigo mdui-theme-accent-pink">
+<body class="mdui-appbar-with-toolbar mdui-drawer-body-left mdui-theme-primary-indigo mdui-theme-accent-pink mdui-theme-layout-auto">
 	<div id="append_parent"></div><div id="ajaxwaitid"></div>
 	<div class="mdui-dialog" id="mdui_ajaxwaitid">
     	<div class="mdui-dialog-content"><i class="mdui-icon"><div class="mdui-spinner"></div></i>&nbsp;&nbsp;&nbsp;&nbsp;请稍后...</div>
@@ -44,16 +44,22 @@
 		<!--=====首页包括用户信息、导航栏、搜索的div=====-->
 		<div class="mdui-appbar mdui-appbar-fixed"> 
 			<div class="mdui-toolbar mdui-color-theme"> 
+				<!--{if $_G['mod'] !== ''}-->
+					<button class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '返回'}" onclick="history.go(-1)">
+						<i class="mdui-icon material-icons">arrow_back</i>
+					</button>
+				<!--{/if}-->
+				
 				<a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '快捷菜单'}" mdui-drawer="{target: '#mdui_user_nav'}">
 					<i class="mdui-icon material-icons">menu</i>
 				</a> 
 				<!--{eval $mnid = getcurrentnav();}-->
 				<a href="{if $_G['setting']['domain']['app']['default']}{$_G['scheme']}://{$_G['setting']['domain']['app']['default']}/{else}./{/if}" class="mdui-typo-headline">$_G['setting']['bbname']</a> 
 				<div class="mdui-toolbar-spacer"></div> 
-				<a href="search.php" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '搜索'}">
+				<a href="search.php" target="_blank" class="mdui-btn mdui-btn-icon mdui-ripple" mdui-tooltip="{content: '搜索'}" id="mdui_toolbar_search">
 					<i class="mdui-icon material-icons">search</i>
 				</a> 
-				<a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" onclick="history.go(0);" mdui-tooltip="{content: '刷新'}">
+				<a href="javascript:;" class="mdui-btn mdui-btn-icon mdui-ripple" onclick="history.go(0);" id="mdui_toolbar_refresh" mdui-tooltip="{content: '刷新'}">
 					<i class="mdui-icon material-icons">refresh</i>
 				</a> 
 				<!--{template common/header_userstatus}-->

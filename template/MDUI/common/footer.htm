@@ -1,4 +1,4 @@
-	</div>
+
 <!--{if empty($topic) || ($topic[usefooter])}-->
 	<!--{eval $focusid = getfocus_rand($_G[basescript]);}-->
 	<!--{if $focusid !== null}-->
@@ -51,8 +51,7 @@
 	<!--{ad/cornerbanner/a_cn}-->
 
 	<!--{hook/global_footer}-->
-	<div id="ft" class="wp cl">
-		<div id="flk" class="y">
+	<div id="ft" class="md-footer">
 			<p>
 				<!--{if $_G['setting']['site_qq']}--><a href="//wpa.qq.com/msgrd?v=3&uin=$_G['setting']['site_qq']&site=$_G['setting']['bbname']&menu=yes&from=discuz" target="_blank" title="QQ"><img src="{IMGDIR}/site_qq.jpg" alt="QQ" /></a><span class="pipe">|</span><!--{/if}-->
 				<!--{loop $_G['setting']['footernavs'] $nav}--><!--{if $nav['available'] && ($nav['type'] && (!$nav['level'] || ($nav['level'] == 1 && $_G['uid']) || ($nav['level'] == 2 && $_G['adminid'] > 0) || ($nav['level'] == 3 && $_G['adminid'] == 1)) ||
@@ -62,7 +61,7 @@
 				<!--{hook/global_footerlink}-->
 				<!--{if $_G['setting']['statcode']}-->$_G['setting']['statcode']<!--{/if}-->
 			</p>
-			<p class="xs0">
+			<p>
 				{lang time_now}
 				<span id="debuginfo">
 				<!--{if debuginfo()}-->, Processed in $_G[debuginfo][time] second(s), $_G[debuginfo][queries] queries
@@ -71,7 +70,7 @@
 				</span>
 			</p>
 		</div>
-		<div id="frt">
+		<div>
 			<p>Powered by <strong><a href="http://www.discuz.net" target="_blank">Discuz!</a></strong> <em>$_G['setting']['version']</em><!--{if !empty($_G['setting']['boardlicensed'])}--> <a href="http://license.comsenz.com/?pid=1&host=$_SERVER[HTTP_HOST]" target="_blank">Licensed</a><!--{/if}--></p>
 			<p class="xs0">Copyright &copy; 2001-2020, Tencent Cloud.</p>
 		</div>
@@ -85,7 +84,7 @@
 		<!--{/if}-->
 	</div>
 <!--{/if}-->
-
+</div>
 <!--{if !$_G['setting']['bbclosed'] && !$_G['member']['freeze'] && !$_G['member']['groupexpiry']}-->
 	<!--{if $_G[uid] && !isset($_G['cookie']['checkpm'])}-->
 	<script type="text/javascript" src="home.php?mod=spacecp&ac=pm&op=checknewpm&rand=$_G[timestamp]"></script>
@@ -141,7 +140,20 @@
 	</script>
 <!--{/if}-->
 
-<button id="btn_scrolltop" class="mdui-fab mdui-fab-fixed mdui-fab-extended mdui-fab-hide mdui-ripple mdui-color-theme" mdui-tooltip="{content:'回到顶部'}" onclick="window.scrollTo('0','0')"><i class="mdui-icon material-icons">keyboard_arrow_up</i></button>
+<div class="mdui-fab-wrapper" mdui-fab>
+    <button class="mdui-fab mdui-ripple mdui-color-theme mdui-fab-hide" id="mdui_fab">
+        <i class="mdui-icon material-icons">menu</i>
+        <i class="mdui-icon mdui-fab-opened material-icons">close</i>
+    </button>
+    <div class="mdui-fab-dial" style="height: 0px;">
+    	
+        <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-theme-accent" style="transition-delay: 0ms;" onclick="changeTheme();" mdui-tooltip="{content: '切换亮色/暗色', position: 'left'}"><i class="mdui-icon material-icons" id="mdui_fab_theme_change_icon">brightness_7</i></button>
+        
+        <a class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-theme-accent" id="mdui_fab_search" style="transition-delay: 15ms;" href="search.php" target="_blank"><i class="mdui-icon material-icons" mdui-tooltip="{content: '搜索', position: 'left'}">search</i></a>
+        <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-theme-accent" id="mdui_fab_refresh" style="transition-delay: 30ms;" onclick="history.go(0);"><i class="mdui-icon material-icons" mdui-tooltip="{content: '刷新', position: 'left'}">refresh</i></button>
+        <button class="mdui-fab mdui-fab-mini mdui-ripple mdui-color-theme-accent" style="transition-delay: 45ms;" onclick="document.body.scrollTop = document.documentElement.scrollTop = 0;"><i class="mdui-icon material-icons" mdui-tooltip="{content: '回到顶部', position: 'left'}">keyboard_arrow_up</i></button>
+    </div>
+</div>
 
 <script type="text/javascript">
 	$(function () {
@@ -155,6 +167,18 @@
 		});
 	});
 </script>
+
+<script type="text/javascript">
+	
+	document.body.classList.remove('mdui-theme-layout-auto');
+	
+	const system_theme = matchMedia('(prefers-color-scheme: dark)');
+	system_theme.matches && document.body.classList.add('mdui-theme-layout-dark');
+	system_theme.addListener(
+    	({ matches }) => document.body.classList[matches ? 'add' : 'remove']('mdui-theme-layout-dark')
+	);
+</script>
+
 <!--{if isset($_G['makehtml'])}-->
 	<script type="text/javascript" src="{$_G[setting][jspath]}html2dynamic.js?{VERHASH}"></script>
 	<script type="text/javascript">
@@ -168,6 +192,109 @@
 <!--{eval output();}-->
 
 <script src="js/mdui.min.js"></script>
+
+<script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+<script type="text/javascript">
+
+	$(function () {
+		
+		$('#mdui_fab').removeClass('mdui-fab-hide');
+		
+		if($('body').hasClass('mdui-theme-layout-dark')){
+			$('#mdui_fab_theme_change_icon').text('brightness_4');
+		}
+		
+	});
+	
+	$(function(){
+		
+		if ($(window).width() <= 600){
+			
+			$('#mdui_toolbar_search').addClass('mdui-hidden');
+        	$('#mdui_toolbar_refresh').addClass('mdui-hidden');
+        	
+        	$('#mdui_fab_search').removeClass('mdui-hidden');
+        	$('#mdui_fab_refresh').removeClass('mdui-hidden');
+			
+		}else{
+			
+			$('#mdui_toolbar_search').removeClass('mdui-hidden');
+    		$('#mdui_toolbar_refresh').removeClass('mdui-hidden');
+    		
+    		$('#mdui_fab_search').addClass('mdui-hidden');
+        	$('#mdui_fab_refresh').addClass('mdui-hidden');
+			
+		}
+		
+	});
+
+	$(window).resize(function(){
+		
+		var window_width = $(window).width();//获取浏览器窗口宽度
+    	if(window_width <= 600){
+        	
+        	$('#mdui_toolbar_search').addClass('mdui-hidden');
+        	$('#mdui_toolbar_refresh').addClass('mdui-hidden');
+        	
+        	$('#mdui_fab_search').removeClass('mdui-hidden');
+        	$('#mdui_fab_refresh').removeClass('mdui-hidden');
+        	
+    	}else{
+    		
+    		$('#mdui_toolbar_search').removeClass('mdui-hidden');
+    		$('#mdui_toolbar_refresh').removeClass('mdui-hidden');
+    		
+    		$('#mdui_fab_search').addClass('mdui-hidden');
+        	$('#mdui_fab_refresh').addClass('mdui-hidden');
+    		
+    	}
+	});
+	
+	function changeTheme(){
+		
+		$('body').toggleClass('mdui-theme-layout-dark');
+		
+		if($('body').hasClass('mdui-theme-layout-dark')){
+			
+			$('#mdui_fab_theme_change_icon').text('brightness_4');
+			
+		}else{
+			
+			$('#mdui_fab_theme_change_icon').text('brightness_7');
+			
+		}
+		
+	}
+	
+</script>
+
+<style>
+	html {
+		scroll-behavior: smooth;
+	}
+	md-footer {
+      /*页脚整体外观*/
+      line-height: 40px;
+      background: #f2f2f2;
+      border-top: 1px solid #e4e4e4;
+      font-size: 10pt;
+      color: #222;
+    }
+    md-footer text, footer a {
+      /*页脚链接和文字*/
+      margin-left: 30px;
+      color: #666;
+      display: inline-block;
+      line-height: 40px;
+      font-family: sans-serif;
+      font-size: 10pt;
+      margin-right: 30px;
+      text-decoration: none;
+    }
+    md-footer>a:visited {
+      color: #609;
+    }
+</style>
 <!--
 <script src="js/materialize.min.js"></script>
 -->
