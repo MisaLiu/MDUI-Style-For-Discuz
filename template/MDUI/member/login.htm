@@ -57,7 +57,6 @@
 		<!--{hook/logging_top}-->
 		<!--=====登陆表单=====-->
 		<form method="post" autocomplete="off" name="login" id="loginform_$loginhash" class="cl" onsubmit="{if $this->setting['pwdsafety']}pwmd5('password3_$loginhash');{/if}pwdclear = 1;ajaxpost('loginform_$loginhash', 'returnmessage_$loginhash', 'returnmessage_$loginhash', 'onerror');return false;" action="member.php?mod=logging&action=login&loginsubmit=yes{if !empty($_GET['handlekey'])}&handlekey=$_GET[handlekey]{/if}{if isset($_GET['frommessage'])}&frommessage{/if}&loginhash=$loginhash">
-			<div class="c cl">
 				<input type="hidden" name="formhash" value="{FORMHASH}" />
 				<input type="hidden" name="referer" value="{echo dreferer()}" />
 				<!--{if $auth}-->
@@ -162,7 +161,6 @@
 						</table>
 					</div>
 				<!--{/if}-->
-			</div>
 		</form>
 	</div>
 	<!--{if $_G['setting']['pwdsafety']}-->
