@@ -1,0 +1,69 @@
+<script type="text/javascript">
+var postminchars = parseInt('$_G['setting']['minpostsize']');
+var postmaxchars = parseInt('$_G['setting']['maxpostsize']');
+var disablepostctrl = parseInt('{$_G['group']['disablepostctrl']}');
+var fid = parseInt('$_G[fid]');
+</script>
+
+<h1 class="mdui-text-color-theme">
+	{lang quick_post}
+</h1>
+<div class="mdui-card mdui-hoverable">
+	<form method="post" autocomplete="off" id="fastpostform" action="forum.php?mod=post&action=newthread&fid=$_G[fid]&topicsubmit=yes&infloat=yes&handlekey=fastnewpost" onSubmit="return fastpostvalidate(this)">
+
+		<!--{if $_G[uid]}-->
+			<div class="mdui-card-content">
+				<!--{if $_G['forum'][threadtypes][types]}-->
+				<div class="mdui-row">
+					&nbsp;&nbsp;主题分类：&nbsp;
+					<select class="mdui-select" name="typeid" id="typeid_fast" mdui-select="{position: 'bottom'}">
+						<option value="0" selected="selected">{lang select_thread_catgory}</option>
+							<!--{loop $_G['forum'][threadtypes][types] $typeid $name}-->
+								<!--{if empty($_G['forum']['threadtypes']['moderators'][$typeid]) || $_G['forum']['ismoderator']}-->
+									<option value="$typeid"><!--{echo strip_tags($name);}--></option>
+								<!--{/if}-->
+							<!--{/loop}-->
+					</select>
+				</div>
+				<!--{/if}-->
+				<div class="mdui-textfield mdui-textfield-floating-label">
+					<label class="mdui-textfield-label">标题</label>
+					<input class="mdui-textfield-input" type="text" id="subject" name="subject" maxlength="80" required />
+					<div class="mdui-textfield-error">帖子标题为必填项</div>
+				</div>
+				<div class="mdui-textfield mdui-textfield-floating-label">
+					<label class="mdui-textfield-label">内容</label>
+					<textarea class="mdui-textfield-input" rows="4" name="message" id="fastpostmessage" required></textarea>
+					<div class="mdui-textfield-error">帖子内容为必填项</div>
+				</div>
+			</div>
+
+			<div class="mdui-card-actions">
+				<!--{if helper_access::check_module('follow')}-->
+					&nbsp;&nbsp;
+					<label class="mdui-checkbox">
+						<input type="checkbox" name="adddynamic" value="1" {if $_G['forum']['allowfeed'] && !$_G[tid] && empty($_G['forum']['viewperm'])}checked="checked"{/if} />
+						<i class="mdui-checkbox-icon"></i>
+						{lang post_relay}
+					</label>
+				<!--{/if}-->
+				<!--{if !empty($_G['setting']['pluginhooks']['forumdisplay_fastpost_sync_method'])}-->
+					{lang post_sync_method}:
+				<!--{/if}-->
+				<button class="mdui-btn mdui-btn-raised mdui-ripple mdui-float-right mdui-color-theme-accent" type="submit" name="topicsubmit" id="fastpostsubmit" value="topicsubmit">{lang post_newthread}</button>
+				<a href="home.php?mod=spacecp&ac=credit&op=rule&fid=$_G[fid]" target="_blank" class="mdui-btn mdui-ripple mdui-float-right">{lang post_credits_rule}</a>
+				<a href="forum.php?mod=post&action=newthread&fid=$_G[fid]" target="_blank" class="mdui-btn mdui-ripple mdui-float-right">{lang post_advancemode}</a>
+			</div>
+			<input type="hidden" name="formhash" value="{FORMHASH}" />
+			<input type="hidden" name="usesig" value="$usesigcheck" />
+			<input type="hidden" name="posttime" id="posttime" value="{TIMESTAMP}" />
+		
+		<!--{else}-->
+			<div class="mdui-card-content">
+				<div class="mdui-text-color-black-disabled">
+					<center>您还未登录，登录后即可发帖</center>
+				</div>
+			</div>
+		<!--{/if}-->
+	</form>
+</div>

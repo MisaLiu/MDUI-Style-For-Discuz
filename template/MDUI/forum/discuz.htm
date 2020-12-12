@@ -3,51 +3,44 @@
 <!--=====论坛首页四格、板块、在线人数、友联等的显示区域=====-->
 <div id="ct" class="wp cl{if $_G['setting']['forumallowside']} ct2{/if}">
 
-	<h1>
+	<h1 class="mdui-text-color-theme">
 		$_G['setting']['bbname']
 	</h1>
-
+	
 	<!--{if empty($gid)}-->
-
 		<!--=====首页站点统计信息，包含今昨日帖子数、会员数，以及新会员等=====-->
-		<div id="chart" class="bm bw0 cl">
-
-			<p class="chart z">
-				{lang index_today}: <em>$todayposts</em>
-				<span class="pipe">|</span>
-
-				{lang index_yesterday}: <em>$postdata[0]</em>
-				<span class="pipe">|</span>
-
-				{lang index_posts}: <em>$posts</em>
-				<span class="pipe">|</span>
-
-				{lang index_members}: <em>$_G['cache']['userstats']['totalmembers']</em>
+		<div class="mdui-card mdui-hoverable">
+			
+			<div class="mdui-card-content">
+				<div  class="mdui-typo">
+					{lang index_today}：$todayposts | {lang index_yesterday}：$postdata[0] | {lang index_posts}：$posts | 用户：$_G['cache']['userstats']['totalmembers'] 
 					<!--{if $_G['cache']['userstats']['newsetuser']}-->
-						<span class="pipe">|</span>
-						{lang welcome_new_members}: <em><a href="home.php?mod=space&username={echo rawurlencode($_G['cache']['userstats']['newsetuser'])}" target="_blank" class="xi2">$_G['cache']['userstats']['newsetuser']</a></em>
+						| 最近注册的新用户：<a href="home.php?mod=space&username={echo rawurlencode($_G['cache']['userstats']['newsetuser'])}" target="_blank">$_G['cache']['userstats']['newsetuser']</a>
 					<!--{/if}-->
-			</p>
+				</div>
+			</div>
 
-			<!--=====统计信息同一行右边的 我的帖子 与 最新回复=====-->
-			<div class="y">
+			<!--{if empty($gid) && $announcements}-->
+				<!--=====判断是否有公告，有就输出公告=====-->
+				<div class="mdui-card-content">
+						<div id="anc" class="mdui-typo"><ul id="ancl">$announcements</ul></div>
+					<script type="text/javascript">announcement();</script>
+				</div>
+				<!--{/if}-->
+			
+			<div class="mdui-card-actions">
 				<!--{hook/index_nav_extra}-->
 				<!--{if $_G['uid']}-->
-					<!--=====判断用户有没有登录=====-->
-					<a href="forum.php?mod=guide&view=my" title="{lang my_posts}" class="xi2">{lang my_posts}</a>
+					<a href="forum.php?mod=guide&view=my" class="mdui-btn mdui-ripple mdui-text-color-theme-accent mdui-float-right">{lang my_posts}</a>
 				<!--{/if}-->
 
 				<!--{if !empty($_G['setting']['search']['forum']['status'])}-->
-					<!--=====这判断了个啥=====-->
-					<!--{if $_G['uid']}-->
-						<!--=====判断用户有没有登录=====-->
-						<span class="pipe">|</span>
-					<!--{/if}-->
-					<a href="forum.php?mod=guide&view=new" title="{lang show_newthreads}" class="xi2">{lang show_newthreads}</a>
+					<a href="forum.php?mod=guide&view=new" class="mdui-btn mdui-ripple mdui-text-color-theme-accent mdui-float-right">{lang show_newthreads}</a>
 				<!--{/if}-->
-
 			</div>
+			
 		</div>
+		
 	<!--{/if}-->
 
 	<!--[diy=diy_chart]-->
@@ -199,7 +192,7 @@
 			<div class="mdui-panel" mdui-panel> 
 				<div class="mdui-panel-item mdui-panel-item-open"> 
 					<div class="mdui-panel-item-header"> 
-						<div class="mdui-panel-item-title">
+						<div class="mdui-panel-item-title mdui-text-color-theme">
 							{lang forum_myfav}
 						</div> 
 						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i> 
@@ -211,10 +204,9 @@
 							<!--{eval $forum=$favforumlist[$favorite[id]];}-->
 							<!--{eval $forumurl = !empty($forum['domain']) && !empty($_G['setting']['domain']['root']['forum']) ? $_G['scheme'].'://'.$forum['domain'].'.'.$_G['setting']['domain']['root']['forum'] : 'forum.php?mod=forumdisplay&fid='.$forum['fid'];}-->
 							<div class="mdui-col-sm-6 mdui-col-md-4">
-								<div class="mdui-card"> 
+								<div class="mdui-card mdui-hoverable"> 
 									<!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 --> 
-									<div class="mdui-card-media"> 
-										<img src="https://s3.ax1x.com/2020/12/04/DHZ4m9.jpg" /> 
+									<div class="mdui-card-media" style="height: 212px;{if $forum[banner]}background: url('data/attachment/common/$forum[banner]');{else}background: url('https://s3.ax1x.com/2020/12/04/DHZ4m9.jpg');{/if}background-size: cover;"> 
 										<div class="mdui-card-media-covered mdui-card-media-covered-top mdui-card-media-covered-transparent"> 
 											<!-- 卡片的标题和副标题 --> 
 											<div class="mdui-card-primary"> 
@@ -276,7 +268,7 @@
 									</div> 
 									<!-- 卡片的按钮 --> 
 									<div class="mdui-card-actions"> 
-										<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} class="mdui-btn mdui-ripple mdui-float-right">
+										<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} class="mdui-btn mdui-text-color-theme-accent mdui-ripple mdui-float-right">
 											进入板块
 											<i class="mdui-icon material-icons">chevron_right</i>
 										</a> 
@@ -300,7 +292,7 @@
 			<div class="mdui-panel" mdui-panel> 
 				<div class="mdui-panel-item mdui-panel-item-open"> 
 					<div class="mdui-panel-item-header"> 
-						<div class="mdui-panel-item-title">
+						<div class="mdui-panel-item-title mdui-text-color-theme">
 							$cat[name]
 						</div> 
 						<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i> 
@@ -312,10 +304,9 @@
 							<!--{eval $forumurl = !empty($forum['domain']) && !empty($_G['setting']['domain']['root']['forum']) ? $_G['scheme'].'://'.$forum['domain'].'.'.$_G['setting']['domain']['root']['forum'] : 'forum.php?mod=forumdisplay&fid='.$forum['fid'];}-->
 							<!--=====上面那几排判断式我还是没看懂=====-->
 							<div class="mdui-col-sm-6 mdui-col-md-4">
-								<div class="mdui-card"> 
+								<div class="mdui-card mdui-hoverable"> 
 									<!-- 卡片的媒体内容，可以包含图片、视频等媒体内容，以及标题、副标题 --> 
-									<div class="mdui-card-media"> 
-										<img src="https://s3.ax1x.com/2020/12/04/DHZ4m9.jpg" /> 
+									<div class="mdui-card-media" style="height: 212px;{if $forum[banner]}background: url('data/attachment/common/$forum[banner]');{else}background: url('https://s3.ax1x.com/2020/12/04/DHZ4m9.jpg');{/if}background-size: cover;">
 										<div class="mdui-card-media-covered mdui-card-media-covered-top mdui-card-media-covered-transparent"> 
 											<!-- 卡片的标题和副标题 --> 
 											<div class="mdui-card-primary"> 
@@ -377,7 +368,7 @@
 									</div> 
 									<!-- 卡片的按钮 --> 
 									<div class="mdui-card-actions"> 
-										<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} class="mdui-btn mdui-ripple mdui-float-right">
+										<a href="$forumurl"{if $forum[redirect]} target="_blank"{/if} class="mdui-btn mdui-text-color-theme-accent mdui-ripple mdui-float-right">
 											进入板块
 											<i class="mdui-icon material-icons">chevron_right</i>
 										</a> 
@@ -465,7 +456,7 @@
 			<div class="mdui-panel" mdui-panel> 
 				<div class="mdui-panel-item mdui-panel-item-open"> 
 					<div class="mdui-panel-item-header"> 
-						<div class="mdui-panel-item-title">
+						<div class="mdui-panel-item-title mdui-text-color-theme">
 							{lang onlinemember}
 						</div> 
 						<!--{if $detailstatus}-->
@@ -504,9 +495,11 @@
 								<center><div class="mdui-text-color-black-disabled">{lang online_only_guests}</div></center>
 							<!--{/if}-->
 						</div> 
+						<!--{if $_G[uid]}-->
 						<div class="mdui-panel-item-actions">
-							<a href="home.php?mod=space&do=friend&view=online&type=member" class="mdui-btn mdui-ripple">显示全部</a>
+							<a href="home.php?mod=space&do=friend&view=online&type=member" class="mdui-btn mdui-text-color-theme-accent mdui-ripple">显示全部</a>
 						</div>
+						<!--{/if}-->
 					</div> 
 				</div> 
 			</div> 
@@ -514,34 +507,34 @@
 
 		<!--{if empty($gid) && ($_G['cache']['forumlinks'][0] || $_G['cache']['forumlinks'][1] || $_G['cache']['forumlinks'][2])}-->
 		<!--=====友情链接区=====-->
-		<div class="bm lk">
-			<div id="category_lk" class="bm_c ptm">
-
-				<!--{if $_G['cache']['forumlinks'][0]}-->
-					<div class="mdui-typo">
-						<!--=====带图标的友链=====-->
-						$_G['cache']['forumlinks'][0]
+				<div class="mdui-panel" mdui-panel>
+					<div class="mdui-panel-item mdui-panel-item-open">
+						<div class="mdui-panel-item-header">
+							<div class="mdui-panel-item-title mdui-text-color-theme">友情链接</div>
+							<i class="mdui-panel-item-arrow mdui-icon material-icons">keyboard_arrow_down</i>
+						</div>
+						<div class="mdui-panel-item-body">
+							<div class="mdui-typo">
+								<!--{if $_G['cache']['forumlinks'][0]}-->
+									<!--=====带图标的友链=====-->
+									$_G['cache']['forumlinks'][0]
+								<!--{/if}-->
+								
+								<!--{if $_G['cache']['forumlinks'][1]}-->
+									<div class="mdui-divider"></div>
+										<!--=====不知道我是什么类型的友链=====-->
+										$_G['cache']['forumlinks'][1]
+								<!--{/if}-->
+								
+								<!--{if $_G['cache']['forumlinks'][2]}-->
+									<div class="mdui-divider"></div>
+										<!--=====纯文字友链=====-->
+										$_G['cache']['forumlinks'][2]
+								<!--{/if}-->
+							</div>
+						</div>
 					</div>
-				<!--{/if}-->
-				
-				<!--{if $_G['cache']['forumlinks'][1]}-->
-					<div class="mdui-divider"></div>
-					<div class="mdui-typo">
-						<!--=====不知道我是什么类型的友链=====-->
-						$_G['cache']['forumlinks'][1]
-					</div>
-				<!--{/if}-->
-				
-				<!--{if $_G['cache']['forumlinks'][2]}-->
-					<div class="mdui-divider"></div>
-					<div class="mdui-typo">
-						<!--=====纯文字友链=====-->
-						$_G['cache']['forumlinks'][2]
-					</div>
-				<!--{/if}-->
-
-			</div>
-		</div>
+				</div>
 		<!--{/if}-->
 
 		<!--{hook/index_bottom}-->
@@ -556,7 +549,6 @@
 			<!--{hook/index_side_bottom}-->
 		</div>
 	<!--{/if}-->
-</div>
 
 <!--{if empty($_G['setting']['disfixednv_forumindex']) }--><script>fixed_top_nv();</script><!--{/if}-->
 <!--{template common/footer}-->

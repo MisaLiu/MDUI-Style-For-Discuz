@@ -1,0 +1,85 @@
+<!--{template common/header}-->
+
+<h1 class="mdui-text-color-theme">
+	{lang darkroom} - $_G[setting][bbname]
+</h1>
+
+<!--{if $crimelist}-->
+<div class="mdui-table-fluid mdui-hoverable">
+  	<table class="mdui-table mdui-table-hoverable" id="darkroomtable" summary="{lang darkroom}">
+    	<thead>
+     		<tr>
+        		<th style="width:105px;">{lang username}</th>
+        		<th style="width:135px;">{lang crime_action}</th>
+        		<th style="width:155px;">{lang expire_dateline}</th>
+        		<th style="width:155px;">{lang crime_dateline}</th>
+        		<th>{lang crime_reason}</th>
+      		</tr>
+    	</thead>
+    	<tbody>
+    		<!--{eval $i = 0;}-->
+				<!--{loop $crimelist $crime}-->
+				<!--{eval $i++;}-->
+      			<tr>
+        			<td class="mdui-typo"><a href="home.php?mod=space&uid=$crime[uid]" target="_blank">$crime[username]</a></td>
+        			<td>$crime[action]</td>
+        			<td>$crime[groupexpiry]</td>
+        			<td>$crime[dateline]</td>
+        			<td>$crime[reason]</td>
+      			</tr>
+      		<!--{/loop}-->
+    	</tbody>
+  	</table>
+  		<!--{if $dataexist == 1}-->
+		<a href="javascript:;" class="nxt" id="darkroommore" cid="$cid">{lang more}</a>
+	<!--{/if}-->
+</div>
+<!--{else}-->
+	<div class="mdui-card mdui-hoverable">
+		<div class="mdui-card-content mdui-text-color-black-secondary">
+			<center>{lang darkroom_no_users}</center>
+		</div>
+	</div>
+<!--{/if}-->
+
+<script type="text/javascript">
+	(function() {
+	 if($('darkroommore')) {
+		$('darkroommore').onclick = function() {
+			var obj = this;
+			var cid = parseInt(obj.getAttribute('cid').valueOf());
+			var url = 'forum.php?mod=misc&action=showdarkroom&cid=' + cid + '&t=' + parseInt((+new Date()/1000)/(Math.random()*1000));
+			var table = $('darkroomtable');
+			var tablerows = table.rows.length;
+			var x = new Ajax('JSON');
+			x.getJSON(url, function(s) {
+				if(s && s.message) {
+					if(s.message.dataexist == 1) {
+						obj.setAttribute('cid', s.message.cid);
+					} else {
+						obj.style.display = 'none';
+					}
+					var list = s.data;
+					for(i in list) {
+						if($('darkroomuid_' + list[i].uid)) {
+							continue;
+						}
+						var newtr = table.insertRow(tablerows);
+						if(tablerows % 2 == 0) {
+							newtr.className = 'alt';
+						}
+						newtr.insertCell(0).innerHTML = '<a href="home.php?mod=space&uid=' + list[i].uid + '" target="_blank">' + list[i].username + '</a>';
+						newtr.insertCell(1).innerHTML = list[i].action;
+						newtr.insertCell(2).innerHTML = list[i].groupexpiry;
+						newtr.insertCell(3).innerHTML = list[i].dateline;
+						newtr.insertCell(4).innerHTML = list[i].reason;
+						tablerows++;
+					}
+				}
+			});
+		};
+	 }
+	 })();
+</script>
+
+<!--{template common/footer}-->
