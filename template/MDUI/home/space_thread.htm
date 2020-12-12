@@ -1,0 +1,381 @@
+{eval
+	$filter = array( 'common' => '{lang have_posted}', 'save' => '{lang draft}', 'close' => '{lang closed}', 'aduit' => '{lang pending}', 'ignored' => '{lang ignored}', 'recyclebin' => '{lang recyclebin}');
+	$_G[home_tpl_spacemenus][] = "<a href=\"home.php?mod=space&uid=$space[uid]&do=thread&view=me\">{lang they_thread}</a>";
+}
+
+<!--{if $diymode}-->
+	<!--{if $_G[setting][homepagestyle]}-->
+		<!--{subtemplate home/space_header}-->
+		<div id="ct" class="ct2 wp cl">
+			<div class="mn">
+				<div class="bm">
+					<div class="bm_h">
+						<!--{if $space[self]}--><span class="xi2 y"><a href="forum.php?mod=misc&action=nav" onclick="showWindow('nav', this.href, 'get', 0)" class="addnew">{lang posted}</a></span><!--{/if}-->
+						<h1 class="mt">
+							<!--{if $_GET[type] == 'reply'}-->
+							<span class="xs1 xw0"><a href="home.php?mod=space&do=thread&view=me&type=thread&uid=$space[uid]&from=space">{lang topic}</a><span class="pipe">|</span></span>{lang reply}
+							<!--{else}-->
+							{lang topic}<span class="xs1 xw0"><span class="pipe">|</span><a href="home.php?mod=space&do=thread&view=me&type=reply&uid=$space[uid]&from=space">{lang reply}</a></span>
+							<!--{/if}-->
+						</h1>
+					</div>
+				<div class="bm_c">
+	<!--{else}-->
+		<!--{template common/header}-->
+		<style id="diy_style" type="text/css"></style>
+		<div class="wp">
+			<!--[diy=diy1]--><div id="diy1" class="area"></div><!--[/diy]-->
+		</div>
+		<div id="ct" class="ct1 wp cl">
+			<div class="mn">
+				<!--[diy=diycontenttop]--><div id="diycontenttop" class="area"></div><!--[/diy]-->
+				<div class="bm bw0">
+					<div class="bm_c">
+	<!--{/if}-->
+<!--{else}-->
+	<!--{template common/header}-->
+	<style id="diy_style" type="text/css"></style>
+	<div class="wp">
+		<!--[diy=diy1]--><div id="diy1" class="area"></div><!--[/diy]-->
+	</div>
+	<div id="ct" class="ct2_a wp cl">
+	<!--{if $_G[setting][homestyle]}-->
+		<div class="mn pbw">
+			<!--[diy=diycontenttop]--><div id="diycontenttop" class="area"></div><!--[/diy]-->
+			<div class="bm bw0">
+				<ul class="tb cl">
+					<li$actives[we]><a href="home.php?mod=space&do=thread&view=we">{lang friend_post}</a></li>
+					<li$actives[me]><a href="home.php?mod=space&do=thread&view=me">{lang my_post}</a></li>
+				</ul>
+			</div>
+	<!--{else}-->
+		<div class="mn pbw">
+		<!--[diy=diycontenttop]--><div id="diycontenttop" class="area"></div><!--[/diy]-->
+	<!--{/if}-->
+<!--{/if}-->
+		
+<div class="mdui-card">
+
+	<style>
+		.user_banner {
+			height: 250px;
+			background: url('https://s3.ax1x.com/2020/12/07/DzkTN4.jpg');
+			background-size: cover;
+		}
+	</style>
+	<div class="mdui-card-media user_banner">
+		<div class="mdui-card-media-covered">
+			<div class="mdui-card-actions mdui-float-right">
+
+				<!--{if helper_access::check_module('follow')}-->
+					<!--{if !ckfollow($space['uid'])}-->
+						<a href="home.php?mod=spacecp&ac=follow&op=add&hash={FORMHASH}&fuid=$space[uid]" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">add</i>关注TA</a>
+					<!--{else}-->
+						<a href="home.php?mod=spacecp&ac=follow&op=del&fuid=$space[uid]" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">remove</i>取消关注</a>
+					<!--{/if}-->
+				<!--{/if}-->
+
+				<!--{if !$isfriend}-->
+					<a href="home.php?mod=spacecp&ac=friend&op=add&uid=$space[uid]&handlekey=addfriendhk_{$space[uid]}" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">add</i>{lang add_friend}</a>
+				<!--{else}-->
+					<a href="home.php?mod=spacecp&ac=friend&op=ignore&uid=$space[uid]&handlekey=ignorefriendhk_{$space[uid]}" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">remove</i>{lang ignore_friend}</a>
+				<!--{/if}-->
+
+				<a href="home.php?mod=spacecp&ac=pm&op=showmsg&handlekey=showmsg_$space[uid]&touid=$space[uid]&pmid=0&daterange=2" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">mail</i>{lang send_pm}</a>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="mdui-card-primary">
+		<!--{if $_G['setting']['verify']['enabled']}-->
+			<!--{eval $showverify = true;}-->
+			<!--{loop $_G['setting']['verify'] $vid $verify}-->
+				<!--{if $verify['available']}-->
+					<!--{if $space['verify'.$vid] == 1}-->
+						<!--{if $verify['icon']}-->
+							<div style="position:absolute;top:60px;left:50px;background:url('$verify['icon']');background-size:cover;width:24px;height:24px;z-index:6;"  mdui-tooltip="{content: '<b><center>$verify[title]</center></b><center>{if $space[customstatus]}$space[customstatus]{else}$verify[title]{/if}</center>'}"></div>
+						<!--{/if}-->
+					<!--{/if}-->
+				<!--{/if}-->
+			<!--{/loop}-->
+		<!--{/if}-->
+		<img class="mdui-img-circle" style="float:left;margin-top:6px;margin-right:12px;width:48px;height:48px;" src="uc_server/avatar.php?uid=$space['uid']&size=middle"/>
+
+		<div class="mdui-card-primary-title">
+			{$space[username]}
+		</div>
+		<div class="mdui-card-primary-subtitle">
+			<!--{if $space[group][maxsigsize] && $space[sightml]}-->
+				$space[sightml]
+			<!--{else}-->
+				这个人很懒，什么都没有写～
+			<!--{/if}-->
+		</div>
+		</div>
+	
+		<div class="mdui-card-content">
+	
+			<div class="mdui-tab mdui-tab-scrollable" mdui-tab>
+				<!--{if helper_access::check_module('follow')}-->
+				<a href="home.php?mod=follow&uid=$space[uid]&do=view&from=space" class="mdui-ripple">{lang follow}</a>
+				<!--{/if}-->
+	
+				<a href="home.php?mod=space&uid=$space[uid]&do=thread&view=me&from=space" class="mdui-ripple mdui-tab-active">{lang topic}</a>
+	
+				<!--{if helper_access::check_module('blog')}-->
+				<a href="home.php?mod=space&uid=$space[uid]&do=blog&view=me&from=space" class="mdui-ripple">{lang blog}</a>
+				<!--{/if}-->
+	
+				<!--{if helper_access::check_module('album')}-->
+				<a href="home.php?mod=space&uid=$space[uid]&do=album&view=me&from=space" class="mdui-ripple">{lang album}</a>
+				<!--{/if}-->
+	
+				<!--{if helper_access::check_module('doing')}-->
+				<a href="home.php?mod=space&uid=$space[uid]&do=doing&view=me&from=space" class="mdui-ripple">{lang doing}</a>
+				<!--{/if}-->
+	
+				<!--{if helper_access::check_module('home')}-->
+				<a href="home.php?mod=space&uid=$space[uid]&do=home&view=me&from=space" class="mdui-ripple">{lang feed}</a>
+				<!--{/if}-->
+	
+				<!--{if helper_access::check_module('share')}-->
+				<a href="home.php?mod=space&uid=$space[uid]&do=share&view=me&from=space" class="mdui-ripple">{lang share}</a>
+				<!--{/if}-->
+	
+				<!--{if helper_access::check_module('wall')}-->
+				<a href="home.php?mod=space&uid=$space[uid]&do=wall&from=space" class="mdui-ripple">{lang message}</a>
+				<!--{/if}-->
+	
+				<a href="home.php?mod=space&uid=$space[uid]&do=profile&from=space" class="mdui-ripple">{lang memcp_profile}</a>
+	
+			</div>
+	
+			<div class="mdui-divider"></div>
+			
+			<div class="mdui-typo">
+				<h2>{$space[username]} 的帖子</h2>
+			</div><br>
+			
+			<a href="home.php?mod=space&do=thread&view=me&type=thread" class="mdui-btn mdui-ripple mdui-text-color-theme-accent" $orderactives[thread]>{lang topic}</a>
+			<a href="home.php?mod=space&do=thread&view=me&type=reply" class="mdui-btn mdui-ripple mdui-text-color-theme-accent" $orderactives[reply]>{lang reply}</a>
+	
+			<form method="post" autocomplete="off" name="delform" id="delform" action="home.php?mod=space&do=thread&view=all&order=dateline" onsubmit="showDialog('{lang del_select_thread_confirm}', 'confirm', '', '$(\'delform\').submit();'); return false;">
+				<input type="hidden" name="formhash" value="{FORMHASH}" />
+				<input type="hidden" name="delthread" value="true" />
+						
+				<div class="mdui-table-fluid mdui-hoverable">
+					<!--{if $list}-->
+						<table class="mdui-table mdui-table-hoverable" cellspacing="0" cellpadding="0">
+							<thead>
+								<tr>
+									<th></th>
+									<!--{if $_GET['view'] == 'all' && $pruneperm && !$_GET['archiveid']}-->
+										<th></th>
+									<!--{/if}-->
+									<th>
+										<!--{if $viewtype == 'reply' || $viewtype == 'postcomment'}-->
+											{lang post}
+										<!--{else}-->
+											{lang topic}
+										<!--{/if}-->
+									</th>
+									<th>{lang forum}
+										<!--{if $actives[me] && $space['uid'] == $_G['uid']}-->
+											/{lang group}
+										<!--{/if}-->
+									</th>
+									<!--{if $viewtype != 'postcomment'}-->
+										<!--{if !$actives[me]}-->
+											<th>{lang author}</th>
+										<!--{/if}-->
+										
+										<th>{lang replies}</th>
+										<!--{if $actives[me]}-->
+											<th>{lang last_post}</th>
+										<!--{/if}-->
+									<!--{/if}-->
+									<!--{if $actives[me] && $viewtype=='reply'}-->
+										<th>回复内容</th>
+									<!--{/if}-->
+								</tr>
+							</thead>
+		
+							<tbody>
+								<!--{loop $list $stid $thread}-->
+								<tr{if $actives[me] && $viewtype=='reply' || $viewtype=='postcomment'} class="bw0_all"{/if}>
+									<td class="mdui-typo">
+										<a href="forum.php?mod=viewthread&tid=$thread[tid]&highlight=$index[keywords]" mdui-tooltip="{content: '{lang open_new_window}'}" target="_blank">
+										<!--{if $thread[folder] == 'lock'}-->
+											<img src="{IMGDIR}/folder_lock.gif" />
+										<!--{elseif $thread['special'] == 1}-->
+											<img src="{IMGDIR}/pollsmall.gif" alt="{lang poll}" />
+										<!--{elseif $thread['special'] == 2}-->
+											<img src="{IMGDIR}/tradesmall.gif" alt="{lang trade}" />
+										<!--{elseif $thread['special'] == 3}-->
+											<img src="{IMGDIR}/rewardsmall.gif" alt="{lang reward}" />
+										<!--{elseif $thread['special'] == 4}-->
+											<img src="{IMGDIR}/activitysmall.gif" alt="{lang activity}" />
+										<!--{elseif $thread['special'] == 5}-->
+											<img src="{IMGDIR}/debatesmall.gif" alt="{lang debate}" />
+										<!--{elseif in_array($thread['displayorder'], array(1, 2, 3, 4))}-->
+											<img src="{IMGDIR}/pin_$thread[displayorder].gif" alt="$_G[setting][threadsticky][3-$thread[displayorder]]" />
+										<!--{else}-->
+											<!--{if $thread[folder] == 'new'}-->
+												<i class="mdui-icon material-icons mdui-text-color-theme-accent">insert_drive_file</i>
+											<!--{elseif $thread[folder] == 'common'}-->
+												<i class="mdui-icon material-icons mdui-text-color-black-disabled">insert_drive_file</i>
+											<!--{/if}-->
+										<!--{/if}-->
+										</a>
+									</td>
+									
+									<!--{if $_GET['view'] == 'all' && $pruneperm && !$_GET['archiveid']}-->
+										<td>
+											<!--{if $thread['digest'] == 0}-->
+												<!--{if $thread['displayorder'] == 0}-->
+													<label class="mdui-checkbox" name="moderate[]" value="$thread[tid]">
+														<input type="checkbox"/>
+														<i class="mdui-checkbox-icon"></i>
+													</label>
+												<!--{else}-->
+													<label class="mdui-checkbox">
+														<input type="checkbox" disabled />
+														<i class="mdui-checkbox-icon"></i>
+													</label>
+												<!--{/if}-->
+											<!--{else}-->
+												<input type="checkbox" class="pc" disabled="disabled" />
+											<!--{/if}-->
+										</td>
+									<!--{/if}-->
+									
+									<td class="mdui-typo">
+										<!--{if $viewtype == 'reply' || $viewtype == 'postcomment'}-->
+											<a href="forum.php?mod=redirect&goto=findpost&ptid=$thread[tid]&pid=$thread[pid]" target="_blank">$thread[subject]</a>
+										<!--{else}-->
+											<a href="forum.php?mod=viewthread&tid=$thread[tid]" target="_blank" {if $thread['displayorder'] == -1}class="recy"{/if}>$thread[subject]</a>
+										<!--{/if}-->
+										<!--{if $thread['digest'] > 0}-->
+											<img src="{IMGDIR}/digest_$thread[digest].gif" alt="{lang digest} $thread[digest]" align="absmiddle" />
+										<!--{/if}-->
+										<!--{if $thread['attachment'] == 2}-->
+											<img src="{STATICURL}image/filetype/image_s.gif" alt="{lang photo_accessories}" align="absmiddle" />
+										<!--{elseif $thread['attachment'] == 1}-->
+											<img src="{STATICURL}image/filetype/common.gif" alt="{lang accessory}" align="absmiddle" />
+										<!--{/if}-->
+										<!--{if $thread[multipage]}--><span class="tps">$thread[multipage]</span><!--{/if}-->
+										<!--{if !$_GET['filter']}-->
+											<!--{if $thread[$statusfield] == -1}--><span class="xg1">$filter[recyclebin]</span>
+											<!--{elseif $thread[$statusfield] == -2}--><span class="xg1">$filter[aduit]</span>
+											<!--{elseif $thread[$statusfield] == -3 && $thread[displayorder] != -4}--><span class="xg1">$filter[ignored]</span>
+											<!--{elseif $thread[displayorder] == -4}--><span class="xg1">$filter[save]</span>
+											<!--{elseif $thread['closed'] == 1}--><span class="xg1">$filter[close]</span>
+											<!--{/if}-->
+										<!--{/if}-->
+									</td>
+									<td class="mdui-typo">
+										<a href="forum.php?mod=forumdisplay&fid=$thread[fid]" class="xg1" target="_blank">$forums[$thread[fid]]</a>
+									</td>
+									<!--{if $viewtype != 'postcomment'}-->
+										<!--{if !$actives[me]}-->
+										<td class="mdui-typo">
+											<a href="home.php?mod=space&uid=$thread[authorid]" target="_blank">$thread[author]</a> 于 
+											$thread[dateline]
+										</td>
+										<!--{/if}-->
+		
+										<td class="mdui-typo">
+											<a href="forum.php?mod=viewthread&tid=$thread[tid]" class="xi2" target="_blank">$thread[replies]</a>
+											 / $thread[views]
+										</td>
+		
+										<!--{if $actives[me]}-->
+										<td class="mdui-typo">
+											<a href="home.php?mod=space&username=$thread[lastposterenc]" target="_blank">$thread[lastposter]</a> 于 
+											<a href="forum.php?mod=redirect&tid=$thread[tid]&goto=lastpost#lastpost" target="_blank">$thread[lastpost]</a>
+										</td>
+										<!--{/if}-->
+									<!--{/if}-->
+									<!--{if $actives[me] && $viewtype=='reply'}-->
+										<!--{loop $tids[$stid] $pid}-->
+											<!--{eval $post = $posts[$pid];}-->
+												<td class="mdui-typo">&nbsp;
+													<a href="forum.php?mod=redirect&goto=findpost&ptid=$thread[tid]&pid=$pid" target="_blank">
+														“ 
+														<!--{if $post[message]}-->
+															{$post[message]}
+														<!--{else}-->
+															......
+														<!--{/if}-->
+														 ”
+													</a>
+												</td>
+										<!--{/loop}-->
+									<!--{/if}-->
+								</tr>
+							
+								<!--{if $actives[me] && $viewtype=='postcomment'}-->
+								<tr>
+									<td>&nbsp;</td>
+									<td>$thread[comment]</td>
+								</tr>
+								<!--{/if}-->
+								<!--{/loop}-->
+								
+							</tbody>
+						</table>
+					
+					<!--{else}-->
+						<div class="mdui-card mdui-hoverable">
+							<div class="mdui-card-content">
+								<center class="mdui-text-color-black-secondary">{lang no_related_posts}</center>
+							</div>
+						</div>
+					<!--{/if}-->
+		
+					<!--{if $_GET['view'] == 'all' && $pruneperm && !$_GET['archiveid'] && $list}-->
+						<p class="mtm pns">
+							<label for="chkall" onclick="checkall(this.form, 'moderate')"><input type="checkbox" name="chkall" id="chkall" class="pc vm" />{lang select_all}</label>
+							<button type="submit" name="delsubmit" value="true" class="pn vm"><em>{lang del_select_thread}</em></button>
+						</p>
+					<!--{/if}-->
+				</div>
+			</form>
+			
+			<!--{if $hiddennum}-->
+				<div class="mdui-card mdui-hoverable">
+					<div class="mdui-card-content">
+						<center class="mdui-text-color-black-secondary">{lang hide_thread}</center>
+					</div>
+				</div>
+			<!--{/if}-->
+			<br>
+		</div>
+	
+	</div>
+
+			<script type="text/javascript">
+			function fuidgoto(fuid) {
+				window.location.href = 'home.php?mod=space&do=thread&view=we&fuid='+fuid;
+			}
+			function viewforumthread(fid) {
+				window.location.href = '{$forumurl}&fid='+fid;
+			}
+			</script>
+			
+			<!--{if !$_G[setting][homepagestyle]}--><!--[diy=diycontentbottom]--><div id="diycontentbottom" class="area"></div><!--[/diy]--><!--{/if}-->
+	
+			<!--{if $diymode}-->
+						</div>
+	</div>
+			<!--{if $_G[setting][homepagestyle]}-->
+			</div>
+			<div class="sd">
+				<!--{subtemplate home/space_userabout}-->
+			<!--{/if}-->
+		<!--{/if}-->
+		</div>
+	</div>
+
+<!--{template common/footer}-->

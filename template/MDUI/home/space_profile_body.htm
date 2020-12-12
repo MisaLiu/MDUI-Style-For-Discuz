@@ -1,0 +1,390 @@
+<div class="mdui-card">
+
+	<style>
+		.user_banner {
+			height: 250px;
+			background: url('https://s3.ax1x.com/2020/12/07/DzkTN4.jpg');
+			background-size: cover;
+		}
+	</style>
+	<div class="mdui-card-media user_banner">
+		<div class="mdui-card-media-covered">
+			<div class="mdui-card-actions mdui-float-right">
+
+				<!--{if helper_access::check_module('follow')}-->
+					<!--{if !ckfollow($space['uid'])}-->
+						<a href="home.php?mod=spacecp&ac=follow&op=add&hash={FORMHASH}&fuid=$space[uid]" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">add</i>关注TA</a>
+					<!--{else}-->
+						<a href="home.php?mod=spacecp&ac=follow&op=del&fuid=$space[uid]" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">remove</i>取消关注</a>
+					<!--{/if}-->
+				<!--{/if}-->
+
+				<!--{if !$isfriend}-->
+					<a href="home.php?mod=spacecp&ac=friend&op=add&uid=$space[uid]&handlekey=addfriendhk_{$space[uid]}" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">add</i>{lang add_friend}</a>
+				<!--{else}-->
+					<a href="home.php?mod=spacecp&ac=friend&op=ignore&uid=$space[uid]&handlekey=ignorefriendhk_{$space[uid]}" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">remove</i>{lang ignore_friend}</a>
+				<!--{/if}-->
+
+				<a href="home.php?mod=spacecp&ac=pm&op=showmsg&handlekey=showmsg_$space[uid]&touid=$space[uid]&pmid=0&daterange=2" class="mdui-btn mdui-ripple mdui-ripple-white"><i class="mdui-icon material-icons">mail</i>{lang send_pm}</a>
+
+			</div>
+		</div>
+	</div>
+
+	<div class="mdui-card-primary">
+		<!--{if $_G['setting']['verify']['enabled']}-->
+			<!--{eval $showverify = true;}-->
+			<!--{loop $_G['setting']['verify'] $vid $verify}-->
+				<!--{if $verify['available']}-->
+					<!--{if $space['verify'.$vid] == 1}-->
+						<!--{if $verify['icon']}-->
+							<div style="position:absolute;top:60px;left:50px;background:url('$verify['icon']');background-size:cover;width:24px;height:24px;z-index:6;"  mdui-tooltip="{content: '<b><center>$verify[title]</center></b><center>{if $space[customstatus]}$space[customstatus]{else}$verify[title]{/if}</center>'}"></div>
+						<!--{/if}-->
+					<!--{/if}-->
+				<!--{/if}-->
+			<!--{/loop}-->
+		<!--{/if}-->
+		<img class="mdui-img-circle" style="float:left;margin-top:6px;margin-right:12px;width:48px;height:48px;" src="uc_server/avatar.php?uid=$space['uid']&size=middle"/>
+
+		<div class="mdui-card-primary-title">
+			{$space[username]}
+		</div>
+		<div class="mdui-card-primary-subtitle">
+			<!--{if $space[group][maxsigsize] && $space[sightml]}-->
+				$space[sightml]
+			<!--{else}-->
+				这个人很懒，什么都没有写～
+			<!--{/if}-->
+		</div>
+	</div>
+
+	<div class="mdui-card-content">
+
+		<div class="mdui-tab mdui-tab-scrollable" mdui-tab>
+			<!--{if helper_access::check_module('follow')}-->
+			<a href="home.php?mod=follow&uid=$space[uid]&do=view&from=space" class="mdui-ripple">{lang follow}</a>
+			<!--{/if}-->
+
+			<a href="home.php?mod=space&uid=$space[uid]&do=thread&view=me&from=space" class="mdui-ripple">{lang topic}</a>
+
+			<!--{if helper_access::check_module('blog')}-->
+			<a href="home.php?mod=space&uid=$space[uid]&do=blog&view=me&from=space" class="mdui-ripple">{lang blog}</a>
+			<!--{/if}-->
+
+			<!--{if helper_access::check_module('album')}-->
+			<a href="home.php?mod=space&uid=$space[uid]&do=album&view=me&from=space" class="mdui-ripple">{lang album}</a>
+			<!--{/if}-->
+
+			<!--{if helper_access::check_module('doing')}-->
+			<a href="home.php?mod=space&uid=$space[uid]&do=doing&view=me&from=space" class="mdui-ripple">{lang doing}</a>
+			<!--{/if}-->
+
+			<!--{if helper_access::check_module('home')}-->
+			<a href="home.php?mod=space&uid=$space[uid]&do=home&view=me&from=space" class="mdui-ripple">{lang feed}</a>
+			<!--{/if}-->
+
+			<!--{if helper_access::check_module('share')}-->
+			<a href="home.php?mod=space&uid=$space[uid]&do=share&view=me&from=space" class="mdui-ripple">{lang share}</a>
+			<!--{/if}-->
+
+			<!--{if helper_access::check_module('wall')}-->
+			<a href="home.php?mod=space&uid=$space[uid]&do=wall&from=space" class="mdui-ripple">{lang message}</a>
+			<!--{/if}-->
+
+			<a href="home.php?mod=space&uid=$space[uid]&do=profile&from=space" class="mdui-ripple mdui-tab-active">{lang memcp_profile}</a>
+
+		</div>
+
+		<div class="mdui-divider"></div><br>
+
+		<div class="mdui-typo" style="position:relative;top:-26px;">
+			<h2>个人信息</h2>
+			<div class="mdui-row" style="margin-left: 1px;margin-right: 1px;">
+				<!--{if CURMODULE == 'space'}-->
+					<!--{hook/space_profile_baseinfo_top}-->
+				<!--{elseif CURMODULE == 'follow'}-->
+					<!--{hook/follow_profile_baseinfo_top}-->
+				<!--{/if}-->
+
+				<!--{if $_G['setting']['allowspacedomain'] && $_G['setting']['domain']['root']['home'] && checkperm('domainlength') && !empty($space['domain'])}-->
+					<!--{eval $spaceurl = $_G['scheme'].'://'.$space['domain'].'.'.$_G['setting']['domain']['root']['home'];}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						{lang second_domain}
+						<a href="$spaceurl" onclick="setCopy('$spaceurl', '{lang copy_space_address}');return false;">$spaceurl</a>
+					</div>
+				<!--{/if}-->
+
+				<!--{if $_G[setting][homepagestyle]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						{lang space_visits} &#58; $space[views]
+					</div>
+				<!--{/if}-->
+
+				<!--{if in_array($_G[adminid], array(1, 2))}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						Email &#58; $space[email]
+					</div>
+				<!--{/if}-->
+
+				<div class="mdui-col-xs-12 mdui-col-sm-4">
+					{lang email_status} &#58; 
+					<!--{if $space[emailstatus] > 0}-->
+						{lang profile_verified}
+					<!--{else}-->
+						{lang profile_no_verified}
+					<!--{/if}-->
+				</div>
+
+				<div class="mdui-col-xs-12 mdui-col-sm-4">
+					{lang video_certification} &#58; 
+					<!--{if $space[videophotostatus] > 0}-->
+						{lang profile_certified} 
+						<!--{if $showvideophoto}-->
+							&nbsp;&nbsp;(<a href="home.php?mod=space&uid=$space[uid]&do=videophoto" id="viewphoto" onclick="showWindow(this.id, this.href, 'get', 0)">{lang view_certification_photos}</a>)
+						<!--{/if}-->
+					<!--{else}-->
+						{lang profile_no_certified}
+					<!--{/if}-->
+				</div>
+
+				<!--{if $space[spacenote]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						{lang spacenote} &#58; $space[spacenote]
+					</div>
+				<!--{/if}-->
+
+				<div class="mdui-col-xs-12 mdui-col-sm-6">
+					{lang stat_info} &#58; 
+
+					<a href="home.php?mod=space&uid=$space[uid]&do=friend&view=me&from=space" target="_blank">{lang friends_num} &#58; $space[friends]</a>
+
+					<!--{if helper_access::check_module('doing')}-->
+						&nbsp;
+						<a href="home.php?mod=space&uid=$space[uid]&do=doing&view=me&from=space" target="_blank">{lang doings_num} &#58; $space[doings]</a>
+					<!--{/if}-->
+
+					<!--{if helper_access::check_module('blog')}-->
+						&nbsp;
+						<a href="home.php?mod=space&uid=$space[uid]&do=blog&view=me&from=space" target="_blank">{lang blogs_num} &#58; $space[blogs]</a>
+					<!--{/if}-->
+
+					<!--{if helper_access::check_module('album')}-->
+						&nbsp;
+						<a href="home.php?mod=space&uid=$space[uid]&do=album&view=me&from=space" target="_blank">{lang albums_num} &#58; $space[albums]</a>
+					<!--{/if}-->
+
+					<!--{if $_G['setting']['allowviewuserthread'] !== false}-->
+						<!--{eval $space['posts'] = $space['posts'] - $space['threads'];}-->
+						&nbsp;
+						<a href="{if CURMODULE != 'follow'}home.php?mod=space&uid=$space[uid]&do=thread&view=me&type=reply&from=space{else}home.php?mod=space&uid=$space[uid]&view=thread&type=reply{/if}" target="_blank">
+							{lang replay_num} &#58; $space[posts]
+						</a>
+						&nbsp;
+						<a href="{if CURMODULE != 'follow'}home.php?mod=space&uid=$space[uid]&do=thread&view=me&type=thread&from=space{else}home.php?mod=space&uid=$space[uid]&view=thread{/if}" target="_blank">
+							{lang threads_num} &#58; $space[threads]
+						</a>
+					<!--{/if}-->
+
+					<!--{if helper_access::check_module('share')}-->
+						&nbsp;
+						<a href="home.php?mod=space&uid=$space[uid]&do=share&view=me&from=space" target="_blank">{lang shares_num} &#58; $space[sharings]</a>
+					<!--{/if}-->
+					</div>
+			</div><br>
+
+			<!--{if CURMODULE == 'space'}-->
+				<!--{hook/space_profile_baseinfo_middle}-->
+			<!--{elseif CURMODULE == 'follow'}-->
+				<!--{hook/follow_profile_baseinfo_middle}-->
+			<!--{/if}-->
+
+			<div class="mdui-row" style="margin-left: 1px;margin-right: 1px;">
+				<!--{loop $profiles $value}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						$value[title] &#58; $value[value]
+					</div>
+				<!--{/loop}-->
+			</div>
+
+			<!--{if CURMODULE == 'space'}-->
+				<!--{hook/space_profile_baseinfo_bottom}-->
+			<!--{elseif CURMODULE == 'follow'}-->
+				<!--{hook/follow_profile_baseinfo_bottom}-->
+			<!--{/if}-->
+
+			<!--{if $space['medals']}-->
+				<h2>{lang medals}</h2>
+				<!--{loop $space['medals'] $medal}-->
+					&nbsp;&nbsp;&nbsp;&nbsp;
+					<a href="home.php?mod=medal" mdui-tooltip="{content: '<b><center>$medal[name]</center></b>$medal[description]'}">
+						<img src="{STATICURL}/image/common/$medal[image]" alt="$medal[name]" />
+					</a>
+				<!--{/loop}-->
+				<br>
+			<!--{/if}-->
+
+			<!--{if $count}-->
+				<h2>{lang manage_forums}</h2>
+				<!--{loop $manage_forum $key $value}-->
+					&nbsp;&nbsp;
+					<a href="forum.php?mod=forumdisplay&fid=$key" target="_blank">$value</a>
+				<!--{/loop}-->
+				<br>
+			<!--{/if}-->
+
+			<!--{if $groupcount}-->
+				<h2 class="mbn">{lang joined_group}</h2>
+				<!--{loop $usergrouplist $key $value}-->
+					&nbsp;&nbsp;
+					<a href="forum.php?mod=group&fid={$value['fid']}" target="_blank">$value['name']</a>
+				<!--{/loop}-->
+				<br>
+			<!--{/if}-->
+
+			<h2>{lang active_profile}</h2>
+			<div class="mdui-row" style="margin-left: 1px;margin-right: 1px;">
+
+				<!--{if $space[adminid]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						{lang management_team} &#58; 
+						<span style="color:{$space[admingroup][color]}">
+							<a href="home.php?mod=spacecp&ac=usergroup&gid=$space[adminid]" target="_blank">
+								{$space[admingroup][grouptitle]}
+							</a>
+						</span>
+						 {$space[admingroup][icon]}
+					</div>
+				<!--{/if}-->
+
+				<div class="mdui-col-xs-12 mdui-col-sm-4">
+					{lang usergroup} &#58; 
+					<span style="color:{$space[group][color]}"{if $upgradecredit !== false} mdui-tooltip="{content: '{lang credits} $space[credits], {lang thread_groupupgrade} $upgradecredit {lang credits}'}"{/if}>
+						<a href="home.php?mod=spacecp&ac=usergroup&gid=$space[groupid]" target="_blank">
+							{$space[group][grouptitle]}
+						</a>
+					</span>
+					 {$space[group][icon]} 
+					 <!--{if !empty($space['groupexpiry'])}-->
+					 	&nbsp;{lang group_useful_life}&nbsp;
+					 	<!--{date($space[groupexpiry], 'Y-m-d H:i')}-->
+					 <!--{/if}-->
+				</div>
+
+				<!--{if $space[extgroupids]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">
+						{lang group_expiry_type_ext} &#58; $space[extgroupids]
+					</div>
+				<!--{/if}-->
+			</div>
+
+			<div class="mdui-row" style="margin-left: 1px;margin-right: 1px;">
+
+				<!--{if $space[oltime]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang online_time} &#58; $space[oltime] {lang hours}</div>
+				<!--{/if}-->
+
+				<div class="mdui-col-xs-12 mdui-col-sm-4">{lang regdate} &#58; $space[regdate]</div>
+				<div class="mdui-col-xs-12 mdui-col-sm-4">{lang last_visit} &#58; $space[lastvisit]</div>
+
+				<!--{if $_G[uid] == $space[uid] || $_G[group][allowviewip]}-->
+
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang register_ip} &#58; $space[regip] - $space[regip_loc]</div>
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang last_visit_ip} &#58; $space[lastip]:$space[port] - $space[lastip_loc]</div>
+
+				<!--{/if}-->
+
+				<!--{if $space[lastactivity]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang last_activity_time} &#58; $space[lastactivity]</div>
+				<!--{/if}-->
+
+				<!--{if $space[lastpost]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang last_post_time} &#58; $space[lastpost]</div>
+				<!--{/if}-->
+
+				<!--{if $space[lastsendmail]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang last_send_email} &#58; $space[lastsendmail]</div>
+				<!--{/if}-->
+
+				<div class="mdui-col-xs-12 mdui-col-sm-4">{lang time_offset} &#58; 
+					<!--{eval $timeoffset = array({lang timezone});}-->
+					$timeoffset[$space[timeoffset]]
+				</div>
+			</div>
+
+			<h2>{lang stat_info}</h2>
+			<div class="mdui-row" style="margin-left: 1px;margin-right: 1px;">
+				<div class="mdui-col-xs-12 mdui-col-sm-4">{lang used_space} &#58; $space[attachsize]</div>
+
+				<!--{if $space[buyercredit]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang eccredit_sellerinfo} &#58; <a href="home.php?mod=space&uid=$space[uid]&do=trade&view=eccredit<!--{if $_G[setting][homepagestyle]}-->&sns=1<!--{/if}-->#sellcredit" target="_blank">$space[buyercredit] <img src="{STATICURL}image/traderank/buyer/$space[buyerrank].gif" border="0" class="vm" /></a></div>
+				<!--{/if}-->
+
+				<!--{if $space[sellercredit]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">{lang eccredit_buyerinfo} &#58; <a href="home.php?mod=space&uid=$space[uid]&do=trade&view=eccredit<!--{if $_G[setting][homepagestyle]}-->&sns=1<!--{/if}-->#buyercredit" target="_blank">$space[sellercredit] <img src="{STATICURL}image/traderank/seller/$space[sellerrank].gif" border="0" class="vm" /></a></div>
+				<!--{/if}-->
+
+				<div class="mdui-col-xs-12 mdui-col-sm-4">{lang credits} &#58; $space[credits]</div>
+
+				<!--{loop $_G[setting][extcredits] $key $value}-->
+					<!--{if $value[title]}-->
+					<div class="mdui-col-xs-12 mdui-col-sm-4">$value[title] &#58; {$space["extcredits$key"]} $value[unit]</div>
+					<!--{/if}-->
+				<!--{/loop}-->
+			</div>
+
+			<!--{if $clist}-->
+				<h2>{lang crime_record}</h2>
+				<div class="mdui-table-fluid mdui-hoverable">
+					<table class="mdui-table mdui-table-hoverable">
+						<thead>
+							<tr>
+								<th>{lang crime_action}</th>
+								<th>{lang crime_dateline}</th>
+								<th>{lang crime_reason}</th>
+								<th>{lang crime_operator}</th>
+							</tr>
+						</thead>
+						<tbody>
+						<!--{loop $clist $crime}-->
+						<tr>
+							<td>
+								<!--{if $crime[action] == 'crime_delpost'}-->
+									{lang crime_delpost}
+								<!--{elseif $crime[action] == 'crime_warnpost'}-->
+									{lang crime_warnpost}
+								<!--{elseif $crime[action] == 'crime_banpost'}-->
+									{lang crime_banpost}
+								<!--{elseif $crime[action] == 'crime_banspeak'}-->
+									{lang crime_banspeak}
+								<!--{elseif $crime[action] == 'crime_banvisit'}-->
+									{lang crime_banvisit}
+								<!--{elseif $crime[action] == 'crime_banstatus'}-->
+									{lang crime_banstatus}
+								<!--{elseif $crime[action] == 'crime_avatar'}-->
+									{lang crime_avatar}
+								<!--{elseif $crime[action] == 'crime_sightml'}-->
+									{lang crime_sightml}
+								<!--{elseif $crime[action] == 'crime_customstatus'}-->
+									{lang crime_customstatus}
+								<!--{/if}-->
+							</td>
+							<td><!--{date($crime[dateline])}--></td>
+							<td>$crime[reason]</td>
+							<td class="mdui-typo"><a href="home.php?mod=space&uid=$crime[operatorid]" target="_blank">$crime[operator]</a></td>
+						</tr>
+						<!--{/loop}-->
+						</tbody>
+					</table>
+				</div>
+			<!--{/if}-->
+
+			<!--{if CURMODULE == 'space'}-->
+				<!--{hook/space_profile_extrainfo}-->
+			<!--{elseif CURMODULE == 'follow'}-->
+				<!--{hook/follow_profile_extrainfo}-->
+			<!--{/if}-->
+
+		</div>
+	</div>
+
+</div>
